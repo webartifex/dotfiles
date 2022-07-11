@@ -1,0 +1,4 @@
+# Executed by bash when a login shell starts
+
+# Mimic bash's default behavior and source `~/.profile`
+source "$HOME/.profile"
