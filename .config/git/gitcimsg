@@ -1,0 +1,35 @@
+# SUBJECT
+# =======
+# - what does the commit do
+# - capitalize the first word
+# - use imperative mood (e.g., "Add" over "Adds")
+# - do not end the line with a period
+# - start with "Fix" for any fixes
+# ========= 50 characters / 1 line ============= |
+
+# ============================================== |
+
+
+# BODY (optional)
+# ===============
+# - explain what the commit does, why it does it, and how
+# - do not format the text (e.g., Markdown)
+# - use multiple lines starting with "-" as bullet points
+#   + first sub-level
+#     * second sub-level
+# - link to external resources for more context
+# ========= 72 characters / multiple lines (and paragraphs) ========== |
+
+
+
+# ==================================================================== |
+
+
+# GITHUB ISSUE (optional)
+# =======================
+# - uncomment and adapt one of the lines below
+# - use the "closes" keyword if applicable
+#   (see https://help.github.com/en/articles/closing-issues-using-keywords)
+#
+# Related GitHub issue: #21
+# This commit closes #42 on the GitHub issue tracker
