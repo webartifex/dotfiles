@@ -1,0 +1,6 @@
+--theme="TwoDark"
+
+--style="numbers,changes,header"
+
+--map-syntax ".flake8:ini"
+--map-syntax "poetry.lock:toml"

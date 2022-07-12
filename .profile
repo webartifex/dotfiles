@@ -30,6 +30,8 @@ export REPOS="$HOME/repos"
 
 # Configurations for various utilities
 
+export BAT_CONFIG_PATH="$HOME/.config/bat/config"
+
 export LESSHISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/.lesshst"
 
 
