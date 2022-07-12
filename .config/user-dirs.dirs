@@ -1,0 +1,10 @@
+# Configure the XDG user directories to integrate Nextcloud
+
+XDG_DESKTOP_DIR="$HOME/desktop"
+XDG_DOCUMENTS_DIR="$HOME/nextcloud"
+XDG_DOWNLOAD_DIR="$HOME/downloads"
+XDG_MUSIC_DIR="$HOME/nextcloud"
+XDG_PICTURES_DIR="$HOME/nextcloud/photos"
+XDG_PUBLICSHARE_DIR="$HOME/nextcloud/shares"
+XDG_TEMPLATES_DIR="$HOME/nextcloud/templates"
+XDG_VIDEOS_DIR="$HOME/nextcloud/photos"
