@@ -20,7 +20,7 @@ git clone --bare git@git.webartifex.biz:alexander/dotfiles.git "$HOME/.dotfiles"
 
 # Backup old dotfiles
 rm -rf "$HOME/.dotfiles.bak" >/dev/null
-mkdir -p $HOME/.dotfiles.bak/.config/{bat,flameshot,git,pop-system-updater,shell} && \
+mkdir -p $HOME/.dotfiles.bak/.config/{bat,flameshot,git,Nextcloud,pop-system-updater,shell} && \
 /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
 xargs -I{} mv {} "$HOME/.dotfiles.bak"/{}
 
