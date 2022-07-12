@@ -1,0 +1,30 @@
+-- `psql` executes the commands in this `~/.psqlrc` creating output
+-- (this flag hides that and is unset again at the bottom)
+\set QUIET 1
+
+-- Show verbose error messages
+\set VERBOSITY verbose
+
+-- Use normal "table" format by default and "expanded table" with lots of columns
+\x auto
+
+-- By default, NULLs show up as empty spaces, which looks like empty strings 
+\pset null 'NULL'
+
+-- Ignore errors in interactive sessions but not when executing scripts
+\set ON_ERROR_ROLLBACK interactive
+
+-- Upper case SQL keywords
+\set COMP_KEYWORD_CASE upper
+
+-- Use the best text editor in the world
+\set EDITOR vi
+
+-- Don't store the same SQL statement repeatedly
+\set HISTCONTROL ignoredups
+
+-- Make all queries display query times
+\timing
+
+-- Unset the flag set at the top of this file
+\unset QUIET
