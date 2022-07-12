@@ -1,0 +1,303 @@
+" Good sources on vimrc files:
+" - https://www.youtube.com/watch?v=Gs1VDYnS-Ac
+
+
+" Use VIM improved mode
+set nocompatible
+
+" Set environment variables for convenient usage
+let $RC="$HOME/.vim/vimrc"
+let $RTP=split(&runtimepath, ',')[0]
+
+" Disable VIM's startup message
+set shortmess+=I
+
+" Number of remembered undo steps
+set undolevels=1000
+
+
+" Detect the file's type and load the corresponding plugin and indent files
+filetype plugin indent on
+
+" Enable syntax highlighting
+syntax on
+
+
+" Allow backspace to delete characters in insert mode
+" beyond the start of the insertion and end of lines
+set backspace=start,eol,indent
+
+
+" Hide buffers instead of closing them, wich means we can have
+" unwritten changes to a file and open a new one with :e,
+" without having to write the changes first
+set hidden
+
+
+" Set to the folder of the current file and its sub-folders
+" (this may need to be adapted for large project folders)
+set path=.,**
+
+
+" Store all vim-related working files in ~/.vim
+set viminfo+=n~/.vim/viminfo
+" Use dedicated folders to store temporary backup, swap, and undo files
+" (the // means that VIM adapts names automatically to avoid duplicates)
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+
+" To disable any of the temporary files, uncomment one of the following
+" set nobackup
+" set nowritebackup
+" set noswapfile
+" set noundofile
+
+
+" Show the filename in the terminal window's title bar
+set title
+
+
+" Do not wrap lines when showing text
+set nowrap
+
+" This avoids a problem of loosing data upon insertion in old VIMs
+set wrapmargin=0
+
+
+" Show spelling mistakes (in English) in italics
+set spelllang=en_us,de_de
+set spell
+hi clear SpellBad
+hi clear SpellCap
+hi clear SpellRare
+hi clear SpellLocal
+hi SpellBad cterm=italic
+
+
+" Show whitespace characters
+set listchars=tab:»»,extends:›,precedes:‹,nbsp:·,trail:·
+set list
+
+
+" Highlight matching brackets
+set showmatch
+set matchpairs+=<:>
+
+
+" Always show the status bar at the bottom
+set laststatus=2
+
+" Show current position in status bar
+set ruler
+set rulerformat=%=%l/%L\ %c\ (%P)
+
+" Show commands in status bar
+set showcmd
+
+" If in non-normal mode, show the mode in the status bar
+set showmode
+
+" Show a dialog to save changes instead of an error message
+set confirm
+
+" Auto-clear messages from the status bar
+autocmd CursorHold * :echo
+
+
+" Better copy and paste behavior
+set pastetoggle=<F2>
+set clipboard=unnamed
+
+
+" Make : and ; synonyms
+nnoremap ; :
+
+
+" Use \ and <space> as the <leader> keys and lower time to enter key sequences
+let mapleader='\'
+set timeoutlen=750
+" Make <space> the <leader> in visual mode as well
+nmap <space>  \
+vmap <space>  \
+
+
+" Q normally goes into Ex mode
+nmap Q  <Nop>
+
+
+" Get sudo rights when writing a buffer with w!!
+cnoremap w!!  w !sudo tee % >/dev/null
+
+
+" Enable the mouse for selections, including a toggle for this mode
+set mouse=a
+let g:mouse_enabled=1
+function ToggleMouse()
+    if g:mouse_enabled == 1
+        echo "Mouse OFF"
+        set mouse=
+        let g:mouse_enabled=0
+    else
+        echo "Mouse ON"
+        set mouse=a
+        let g:mouse_enabled=1
+    endif
+endfunction
+noremap <silent><leader>m  :call ToggleMouse()<cr>
+
+
+" Enable toggling between
+"  - showing and hiding line numbers (<leader>l)
+"  - absolute and relative numbers (<leader>a) in normal mode
+"    (default: relative line numbering)
+let g:show_numbers=0
+let g:show_absolute_numbers=0
+function! ShowLineNumbers()
+    if g:show_numbers == 1
+        set number
+        if g:show_absolute_numbers
+            set norelativenumber
+        else
+            set relativenumber
+        endif
+    else
+        set nonumber
+        set norelativenumber
+    endif
+endfunction
+function! ToggleLineNumbers()
+    if g:show_numbers == 1
+        let g:show_numbers=0
+    else
+        let g:show_numbers=1
+    endif
+    call ShowLineNumbers()
+endfunction
+function! ToggleAbsoluteAndRelativeLineNumbers()
+    if g:show_absolute_numbers == 1
+        let g:show_absolute_numbers=0
+    else
+        let g:show_absolute_numbers=1
+    endif
+    call ShowLineNumbers()
+endfunction
+" Auto-switch between absolute and relative numbering when switching modes
+" (insert mode always shows absolute numbers when numbers are shown)
+augroup numbertoggle
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave * call ShowLineNumbers()
+    autocmd BufLeave,FocusLost,InsertEnter   * if g:show_numbers == 1 | set number | set norelativenumber | endif
+augroup END
+" Key bindings
+nnoremap <silent><leader>l  :call ToggleLineNumbers()<cr>
+nnoremap <silent><leader>a  :call ToggleAbsoluteAndRelativeLineNumbers()<cr>
+
+
+" Show all possible matches above command-line when tab completing
+set wildmenu
+set wildmode=longest:full,full
+
+
+" Highlight search results
+set hlsearch
+
+" Shortcut to remove current highlighting
+nnoremap <silent><leader>h  :nohlsearch<cr>
+
+" Move cursor to result while typing immediately
+set incsearch
+
+" Ignore case when searching
+set ignorecase
+
+" Upper case search term => case sensitive search
+set smartcase
+
+" Highlight the next match in red for 0.25 seconds
+function! HighlightNext()
+    let [bufnum, lnum, col, off] = getpos('.')
+    let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
+    let target_pat = '\c\%#\%('.@/.'\)'
+    let ring = matchadd('ErrorMsg', target_pat, 101)
+    redraw
+    exec 'sleep ' . float2nr(250) . 'm'
+    call matchdelete(ring)
+    redraw
+endfunction
+nnoremap <silent>n  n:call HighlightNext()<cr>
+nnoremap <silent>N  N:call HighlightNext()<cr>
+
+
+" Make <leader>w safe the buffer in normal mode
+" and <c-z> save the buffer in all modes
+" (the latter disables making VIM a background job;
+"  <c-z> is useful to have as <leader>w does not work in INSERT mode)
+nnoremap <leader>w  :update<cr>
+nnoremap <c-z>      :update<cr>
+vnoremap <c-z>      <c-c>:update<cr>
+inoremap <c-z>      <c-o>:update<cr>
+
+" <leader>q quits VIM
+nnoremap <leader>q  :quit<cr>
+
+" Easier switching between tabs
+noremap <leader>,  <esc>:tabprevious<cr>
+noremap <leader>.  <esc>:tabnext<cr>
+
+" Arrow keys and <c-h/j/k/l> either (un)indent lines or move them up or down
+" (same for blocks of lines in visual mode)
+nnoremap <left>          <<
+nnoremap <right>         >>
+nnoremap <silent><up>    :m-2<cr>
+nnoremap <silent><down>  :m+<cr>
+nmap <c-h> <left>
+nmap <c-j> <down>
+nmap <c-k> <up>
+nmap <c-l> <right>
+vnoremap <left>          <gv
+vnoremap <right>         >gv
+vnoremap <up>            :m'<-2<cr>gv=gv
+vnoremap <down>          :m'>+1<cr>gv=gv
+vmap <c-h> <left>
+vmap <c-j> <down>
+vmap <c-k> <up>
+vmap <c-l> <right>
+
+" Make <tab> (un)indent lines
+nnoremap <tab>    >>
+nnoremap <s-tab>  <<
+inoremap <tab>    <esc>>>
+inoremap <s-tab>  <esc><<
+vnoremap <tab>    >gv
+vnoremap <s-tab>  <gv
+
+" Make Y yank the rest of a line, just like C or D work
+noremap Y  y$
+
+" Alphabetically sort a selection of lines
+vnoremap <leader>s  :sort<cr>
+
+" Switch two words, just like xp switches two characters
+noremap <leader>xp  dwElp
+
+
+" Auto-reload a file that was changed by some other process
+" if the buffer has not yet been changed in the meantime
+set autoread
+augroup checktime
+    autocmd!
+    autocmd BufEnter     * silent! checktime
+    autocmd CursorHold   * silent! checktime
+    autocmd CursorHoldI  * silent! checktime
+    autocmd CursorMoved  * silent! checktime
+    autocmd CursorMovedI * silent! checktime
+augroup END
+
+
+" Auto-reload ~/.vim/vimrc
+augroup vimrc
+    autocmd! BufWritePost $RC source % | redraw
+augroup END
+" Key binding to reload ~/.vim/vimrc manually
+nnoremap <silent><leader>rc  :so $RC<cr>
