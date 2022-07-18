@@ -12,6 +12,16 @@ in_zsh() {
     [ -n "$ZSH_VERSION" ]
 }
 
+# Prepend a folder to $PATH if it is not already there
+_prepend_to_path () {
+    if [ -d "$1" ] ; then
+        case :$PATH: in
+            *:$1:*) ;;
+            *) PATH=$1:$PATH ;;
+        esac
+    fi
+}
+
 
 
 # =========================
@@ -30,11 +40,44 @@ fi
 command_exists lesspipe && eval "$(SHELL=/bin/sh lesspipe)"
 
 
+# Initialize pyenv if it is installed
+if command_exists pyenv; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
+
+
 # Configure the keyboard:
 #  - make right alt and menu keys the compose key, e.g., for umlauts
 #  - make caps lock a ctrl modifier and Esc key
 setxkbmap us -option 'compose:menu,compose:ralt,caps:ctrl_modifier'
 command_exists xcape && xcape -e "Caps_Lock=Escape"
+
+
+
+# ==========================
+# Command not found handlers
+# ==========================
+
+
+# Check if an unknown command is in a local Python venv
+command_not_found_handle() {
+    if [ -x ".venv/bin/$1" ]; then
+        echo 'You forgot to activate the virtualenv' 1>&2
+        exe=".venv/bin/$1"
+        shift
+        "$exe" "$@"
+        return $?
+    else
+        echo "$1: command not found" 1>&2
+        return 127
+    fi
+}
+
+# zsh uses another name for the handler
+command_not_found_handler() {
+    command_not_found_handle "$@"
+}
 
 
 
@@ -194,6 +237,64 @@ genemail() {
 
 
 
+# ===================================================
+# Set up & maintain the Python (develop) environments
+# ===================================================
+
+
+# TODO: This needs to be updated regularly (or find an automated solution)
+# The Python versions `pyenv` creates
+_py_versions=('3.7.13' '3.8.13' '3.9.13' '3.10.5')
+
+# Each Python environment uses its own `poetry` installation to avoid
+# integration problems between `pyenv` and `poetry`
+# Source: https://github.com/python-poetry/poetry/issues/5252#issuecomment-1055697424
+_py_env_utilities=('poetry')
+
+create-or-update-python-develop-envs() {
+    command_exists pyenv || exit
+
+    eval "$(pyenv init --path)"
+
+    # Keep a legacy Python 2.7, just in case
+    echo -e "\nInstalling/updating Python 2.7.18\n"
+    pyenv install --skip-existing 2.7.18
+    PYENV_VERSION=2.7.18 pip install --upgrade pip setuptools
+    PYENV_VERSION=2.7.18 python -c "import sys; print sys.version"
+
+    for version in ${_py_versions[@]}; do
+        echo -e "\nInstalling/updating Python $version\n"
+        pyenv install --skip-existing $version
+
+        # Start the new environment with the latest `pip` and `setuptools` versions
+        PYENV_VERSION=$version pip install --upgrade pip setuptools
+
+        # Put the specified utilities in the fresh environments (or update them)
+        for util in ${_py_env_utilities[@]}; do
+            PYENV_VERSION=$version pip install --upgrade $util
+        done
+    done
+}
+
+
+# The system Python's local/user-site environment provides Python apps via `pipx`
+_py_global_utilities=('mackup')
+
+create-or-update-python-local-env() {
+    echo -e '\nInstalling/updating the local/user-site Python venv \n'
+    # `--no-warn-script-location` because `~/.local/bin` may not exist yet
+    /usr/bin/python3 -m pip install --no-warn-script-location --user --upgrade pip pipx setuptools
+
+    # This is needed on first installation, in particular if `~/.local/bin` does not yet exist
+    _prepend_to_path "$HOME/.local/bin"
+
+    for util in ${_py_global_utilities[@]}; do
+        pipx install --force $util
+    done
+}
+
+
+
 # =============================
 # Automate the update machinery
 # =============================
@@ -278,6 +379,36 @@ update-zsh() {
 }
 
 
+# Update the entire Python tool chain
+update-python() {
+    echo -e '\nUpdating the Python tool chain\n'
+
+    echo -e '\nUpdating the local/user-site Python venv \n'
+    /usr/bin/python3 -m pip install --user --upgrade pip pipx setuptools
+    echo
+
+    echo -e '\nUpdating the pipx apps/environments\n'
+    pipx upgrade-all
+    echo
+
+    if command_exists pyenv; then
+        echo -e '\nUpdating pyenv\n'
+        pyenv update
+        echo
+
+        echo -e '\nUpdating Python develop environments\n'
+        create-or-update-python-develop-envs
+        echo
+    fi
+
+    if command_exists zsh-pip-cache-packages; then
+        echo -e '\nUpdating pip packages cache\n'
+        zsh-pip-clear-cache
+        zsh-pip-cache-packages
+    fi
+}
+
+
 # Wrapper to run several update functions at once
 update-machine() {
     sudo --validate || return
@@ -295,8 +426,13 @@ update-machine() {
         remove-old-snaps
     fi
 
+    update-python
+
     update-dotfiles
     update-zsh
+
+    echo -e '\nUpdating the configs managed by mackup'
+    mackup restore --force
 
     echo -e '\nUpdating password store\n'
     pass git pull
