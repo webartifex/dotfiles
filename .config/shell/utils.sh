@@ -12,6 +12,16 @@ in_zsh() {
     [ -n "$ZSH_VERSION" ]
 }
 
+# Prepend a folder to $PATH if it is not already there
+_prepend_to_path () {
+    if [ -d "$1" ] ; then
+        case :$PATH: in
+            *:$1:*) ;;
+            *) PATH=$1:$PATH ;;
+        esac
+    fi
+}
+
 
 
 # =========================
@@ -30,11 +40,44 @@ fi
 command_exists lesspipe && eval "$(SHELL=/bin/sh lesspipe)"
 
 
+# Initialize pyenv if it is installed
+if command_exists pyenv; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
+
+
 # Configure the keyboard:
 #  - make right alt and menu keys the compose key, e.g., for umlauts
 #  - make caps lock a ctrl modifier and Esc key
 setxkbmap us -option 'compose:menu,compose:ralt,caps:ctrl_modifier'
 command_exists xcape && xcape -e "Caps_Lock=Escape"
+
+
+
+# ==========================
+# Command not found handlers
+# ==========================
+
+
+# Check if an unknown command is in a local Python venv
+command_not_found_handle() {
+    if [ -x ".venv/bin/$1" ]; then
+        echo 'You forgot to activate the virtualenv' 1>&2
+        exe=".venv/bin/$1"
+        shift
+        "$exe" "$@"
+        return $?
+    else
+        echo "$1: command not found" 1>&2
+        return 127
+    fi
+}
+
+# zsh uses another name for the handler
+command_not_found_handler() {
+    command_not_found_handle "$@"
+}
 
 
 
@@ -194,6 +237,89 @@ genemail() {
 
 
 
+# ===================================================
+# Set up & maintain the Python (develop) environments
+# ===================================================
+
+
+# TODO: This needs to be updated regularly (or find an automated solution)
+# The Python versions `pyenv` creates (in descending order)
+_py3_versions=('3.10.5' '3.9.13' '3.8.13' '3.7.13')
+_py2_version='2.7.18'
+
+# Each Python environment uses its own `poetry` installation to avoid
+# integration problems between `pyenv` and `poetry`
+# Source: https://github.com/python-poetry/poetry/issues/5252#issuecomment-1055697424
+_py3_site_packages=('poetry')
+
+# The pyenv virtualenv "utils" contains some globally available tools (e.g., `mackup`)
+_py3_utils=('mackup')
+
+install-pyenv() {
+    echo -e "\nInstalling pyenv\n"
+
+    # The official installer does a bit more than the `git clone`s below
+    # `curl https://pyenv.run | bash`
+    git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv"
+    git clone https://github.com/pyenv/pyenv-doctor.git "$HOME/.pyenv/plugins/pyenv-doctor"
+    git clone https://github.com/pyenv/pyenv-update.git "$HOME/.pyenv/plugins/pyenv-update"
+    git clone https://github.com/pyenv/pyenv-virtualenv.git "$HOME/.pyenv/plugins/pyenv-virtualenv"
+    git clone https://github.com/pyenv/pyenv-which-ext.git "$HOME/.pyenv/plugins/pyenv-which-ext"
+
+    # On a first install, "$PYENV_ROOT/bin" is NOT on the $PATH
+    _prepend_to_path "$PYENV_ROOT/bin"
+}
+
+re-install-pyenv() {
+    echo -e "\nRemoving pyenv\n"
+    rm -rf "$HOME/.pyenv" >/dev/null
+    install-pyenv
+}
+
+create-or-update-python-envs() {
+    command_exists pyenv || install-pyenv
+
+    eval "$(pyenv init --path)"
+
+    # Keep a legacy Python 2.7, just in case
+    echo -e "\nInstalling/updating Python $_py2_version\n"
+    pyenv install --skip-existing $_py2_version
+    PYENV_VERSION=$_py2_version pip install --upgrade pip setuptools
+    PYENV_VERSION=$_py2_version python -c "import sys; print sys.version"
+
+    for version in ${_py3_versions[@]}; do
+        echo -e "\nInstalling/updating Python $version\n"
+        pyenv install --skip-existing $version
+
+        # Start the new environment with the latest `pip` and `setuptools` versions
+        PYENV_VERSION=$version pip install --upgrade pip setuptools
+
+        # Put the specified utilities in the fresh environments (or update them)
+        for lib in ${_py3_site_packages[@]}; do
+            PYENV_VERSION=$version pip install --upgrade $lib
+        done
+    done
+
+    # Create a virtualenv based off the latest Python version to host global utilities
+    echo -e "\nInstalling/updating global Python utilities\n"
+    pyenv virtualenv $_py3_versions[1] 'utils'
+    PYENV_VERSION='utils' pip install --upgrade pip setuptools
+    for util in ${_py3_utils[@]}; do
+        PYENV_VERSION='utils' pip install --upgrade $util
+    done
+
+    # Create a virtualenv based off the latest Python version for interactive usage
+    # (This virtualenv is empty and is the target of accidental `pip install`s)
+    echo -e "\nInstalling/updating the default/interactive Python environment\n"
+    pyenv virtualenv $_py3_versions[1] 'interactive'
+    PYENV_VERSION='interactive' pip install --upgrade pip setuptools
+
+    # Put all Python binaries and the utilities on the $PATH
+    pyenv global 'interactive' $_py3_versions 'utils' $_py2_version
+}
+
+
+
 # =============================
 # Automate the update machinery
 # =============================
@@ -278,6 +404,28 @@ update-zsh() {
 }
 
 
+# Update the entire Python tool chain
+update-python() {
+    echo -e '\nUpdating the Python tool chain\n'
+
+    if command_exists pyenv; then
+        echo -e '\nUpdating pyenv\n'
+        pyenv update
+        echo
+
+        echo -e '\nUpdating Python environments\n'
+        create-or-update-python-envs
+        echo
+    fi
+
+    if command_exists zsh-pip-cache-packages; then
+        echo -e '\nUpdating pip packages cache\n'
+        zsh-pip-clear-cache
+        zsh-pip-cache-packages
+    fi
+}
+
+
 # Wrapper to run several update functions at once
 update-machine() {
     sudo --validate || return
@@ -295,8 +443,13 @@ update-machine() {
         remove-old-snaps
     fi
 
+    update-python
+
     update-dotfiles
     update-zsh
+
+    echo -e '\nUpdating the configs managed by mackup'
+    mackup restore --force
 
     echo -e '\nUpdating password store\n'
     pass git pull

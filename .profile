@@ -34,6 +34,11 @@ export BAT_CONFIG_PATH="$HOME/.config/bat/config"
 
 export LESSHISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/.lesshst"
 
+export PYENV_ROOT="$HOME/.pyenv"
+_prepend_to_path "$PYENV_ROOT/bin"
+# No need for *.pyc files on a dev machine
+export PYTHONDONTWRITEBYTECODE=1
+
 export PSQLRC="$HOME/.psqlrc"
 
 

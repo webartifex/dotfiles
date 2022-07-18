@@ -102,7 +102,10 @@ zplug "plugins/command-not-found", from:oh-my-zsh
 zplug "plugins/dotenv", from:oh-my-zsh
 zplug "plugins/dirhistory", from:oh-my-zsh
 zplug "plugins/git-escape-magic", from:oh-my-zsh
+zplug "plugins/invoke", from:oh-my-zsh  # completions for `invoke`
 zplug "plugins/jsontools", from:oh-my-zsh
+zplug "plugins/pip", from:oh-my-zsh  # completions for `pip`
+zplug "plugins/poetry", from:oh-my-zsh  # completions for `poetry`
 zplug "plugins/z", from:oh-my-zsh
 
 zplug "romkatv/powerlevel10k", as:theme, depth:1
@@ -139,6 +142,21 @@ zstyle ':completion:*:descriptions' format '%B%d%b'
 zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format 'No matches for: %d'
 zstyle ':completion:*' group-name ''
+
+
+# Enable completions for various tools
+
+# invoke -> see plugins above
+# command_exists invoke && eval "$(invoke --print-completion-script=zsh)"
+
+command_exists nox && eval "$(register-python-argcomplete nox)"
+
+# pip -> see plugins above
+# command_exists pip && eval "$(pip completion --zsh)"
+
+command_exists pipx && eval "$(register-python-argcomplete pipx)"
+
+# poetry -> see plugins above
 
 
 
