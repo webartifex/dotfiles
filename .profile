@@ -36,6 +36,8 @@ export LESSHISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/.lesshst"
 
 export PSQLRC="$HOME/.psqlrc"
 
+export WGETRC="$HOME/.wgetrc"
+
 
 # Shell-specific stuff
 
