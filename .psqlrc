@@ -20,6 +20,10 @@
 -- Use the best text editor in the world
 \set EDITOR vi
 
+-- Use separate history files per database
+-- and keep them in one folder for easier sync with `mackup`
+\set HISTFILE ~/.config/psql/.psql_history- :DBNAME
+
 -- Don't store the same SQL statement repeatedly
 \set HISTCONTROL ignoredups
 
