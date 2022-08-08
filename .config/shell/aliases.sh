@@ -115,3 +115,24 @@ _command_exists fdfind && alias fd='fdfind'
 _command_exists neofetch && alias nf='neofetch'
 _command_exists ranger && alias rn='ranger'
 _command_exists screenfetch && alias sf='screenfetch'
+
+
+# Integrate git
+if _command_exists git; then
+    alias g='git'
+
+    # All git aliases become shell aliases with a 'g' prefix
+    for al in $(git internal-aliases); do
+        # Only "real" (i.e., short) aliases are created
+        [ ${#al} -lt 7 ] && eval "alias g$al='git $al'"
+    done
+
+    # Check if a 'main' branch exists in place of a 'master' branch
+    git_main_branch() {
+        if [[ -n "$(git branch --list main)" ]]; then
+           echo 'main'
+        else
+           echo 'master'
+        fi
+    }
+fi

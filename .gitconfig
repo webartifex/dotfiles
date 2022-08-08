@@ -1,0 +1,205 @@
+[alias]
+# Important: ~/.config/shell/aliases.sh loads all git aliases with
+# less than 7 characters into the shell's "namespace" with a "g" prefix
+# Example:  git add  <=>  git a  <=>  ga
+a = add
+ap = add --patch
+bi = bisect
+br = branch
+bra = branch --all
+brd = branch --delete
+brdd = branch --delete --force
+brm = branch --move
+cf = cat-file
+ci = commit
+cim = commit --message
+cl = clone
+co = checkout
+cob = checkout -b
+cod = checkout develop
+com = checkout master
+cp = cherry-pick
+de = describe --tags
+df = diff
+fe = fetch
+lg = log
+lga = log --all
+mb = merge-base
+me = merge
+mea = merge --abort
+mec = merge --continue
+mefeat = "!f() { if [ $# -eq 0 ]; then echo "Must specify a branch to merge in"; exit 1; fi; git check-pull; if [ $? -gt 0 ]; then echo "$1 must be rebased first"; exit 1; fi; cb=$(git current-branch) && printf '# SUBJECT\n# =======\n# - what does the commit do\n# - capitalize the first word and use the\n#   imperative mood (e.g. "Add" vs "Adds")\n# - do not end the line with a period\n# - start with "Fix" for any hotfixes\n# ========= 50 characters / 1 line ============= |\nMerge in \"%s\"\n# ============================================== |\n\n\n# BODY (optional)\n# ===============\n# - explain what the commit does, why it does it, and how\n# - do not format the text (e.g., Markdown or reStructuredText)\n# - use multiple lines starting with "-" as bullet points\n# - link to external resources for even more context where appropriate\n# ========= 72 characters / multiple lines (and paragraphs) ========== |\nMerge branch \"%s\" into \"%s\"\n\nSummary of the merged in commits:\n' $1 $1 $cb > .merge_msg.txt.tmp && git log --format=format:' * %h: %s' $cb..$1 >> .merge_msg.txt.tmp && printf '\n\n\n# ==================================================================== |\n\n\n# GITHUB ISSUE (optional)\n# =======================\n# - uncomment and adapt one of the lines below\n# - use the "closes" keyword if applicable\n#   (see https://help.github.com/en/articles/closing-issues-using-keywords)\n#\n# Related GitHub issue: #21\n# This commit closes #42 on the GitHub issue tracker\n\n\n#\n# END\n#\n' >> .merge_msg.txt.tmp && git merge --no-ff --no-commit $1 && SKIP=no-commit-to-branch git commit --edit --file=.merge_msg.txt.tmp; rm -f .merge_msg.txt.tmp; }; f"
+meff = merge --ff-only
+menoff = merge --no-ff
+pl = pull
+plrb = pull --rebase
+ps = push
+psf = push --force
+rb = rebase --committer-date-is-author-date
+rba = rebase --abort
+rbc = rebase --continue
+rbi = rebase --interactive
+rbq = rebase --quit
+rbs = rebase --skip
+rl = reflog
+rm = rm  # To make it available as the grm alias
+rp = rev-parse
+rs = reset
+rv = revert
+s = status
+ss = status --short
+sh = show
+st = stash
+sta = stash push --include-untracked  # push does not go into the shortcut!
+stam = stash push --include-untracked --message
+stapp = stash apply
+stl = stash list
+stp = stash pop
+stsh = stash show
+# Provide an overview of all aliases. Second one is for use in ~/.bashrc
+aliases =          config --get-regexp 'alias.*'
+internal-aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1/' | sort
+# Provide synonyms as "specified" in the git status header
+discard = checkout --
+unstage = reset HEAD --
+# Common tasks with tedious or non-intuitive flags
+amend-commit =   !git log -n 1 --pretty=tformat:%B | git commit -F - --amend  # Keep the commit message
+check-pull =     "!f() { git fetch; upstream=${1:-'@{u}'}; local=$(git rev-parse @); remote=$(git rev-parse "$upstream"); base=$(git merge-base @ "$upstream"); if [ $local = $remote ]; then echo "Up-to-date"; exit 0; elif [ $local = $base ]; then echo "Local branch is behind upstream"; elif [ $remote = $base ]; then echo "Local branch is ahead of upstream"; else echo "Local and remote branches diverged"; fi; exit 1; }; f"
+current-branch = !git rev-parse --abbrev-ref HEAD
+project-root =   rev-parse --show-toplevel
+uncommit =       reset --soft HEAD~1
+# Sync the working directory into the index
+rm-deleted =        !git ls-files -z --deleted | xargs -r -0 git rm
+sync-pwd-to-index = !git rm-deleted && git add . --all
+sy =                !git sync-pwd-to-index
+# Make minimal diff the default
+diff-minimal = diff --color-words=. --ws-error-highlight=all
+d =            diff --color-words=. --ws-error-highlight=all
+dlc =          diff --color-words=. --ws-error-highlight=all HEAD
+ds =           diff --color-words=. --ws-error-highlight=all --staged
+# Clean the project folder with intuitive commands
+# Always keep the .python-version file, which is also often in ~.gitignore
+clean-all =      !git reset --hard && git clean-ignored && git clean-untracked
+clean-ignored =   "!f() { if [ -f .python-version ]; then mv .python-version .python-version.XYZ; fi; if [ -f .env ]; then mv .env .env.XYZ; fi; git clean -X -d -f "$@"; if [ -f .python-version.XYZ ]; then mv .python-version.XYZ .python-version; fi; if [ -f .env.XYZ ]; then mv .env.XYZ .env; fi }; f"
+clean-untracked = !git clean -x -d -e ".python-version" -e ".env" -f  # The -e flag does not work with -X
+# Delete everything not reachable from a branch from the repository
+gc-everything = "!f() { git -c gc.reflogExpire=0 -c gc.reflogExpireUnreachable=0 -c gc.rerereresolved=0 -c gc.rerereunresolved=0 -c gc.pruneExpire=now gc "$@"; }; f"
+# Make the logs look nice by default
+last-commit = log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%aN @ %ad => %ar%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S %z' -1 -p --stat
+lc =          log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%aN @ %ad => %ar%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S %z' -1 -p --stat
+history =     log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%aN @ %ad => %ar%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S %z' --graph
+hi =          log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%aN @ %ad => %ar%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S %z' --graph
+hia =         log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%aN @ %ad => %ar%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S %z' --graph --all
+summary =     log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%an @ %ad => %ar%n' --date=format:'%a %Y-%m-%d %H:%M:%S %z' --graph
+su =          log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%an @ %ad => %ar%n' --date=format:'%a %Y-%m-%d %H:%M:%S %z' --graph
+sua =         log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%an @ %ad => %ar%n' --date=format:'%a %Y-%m-%d %H:%M:%S %z' --graph --all
+oneline =     log --pretty='%C(auto)%h: %s%d' --graph
+ol =          log --pretty='%C(auto)%h: %s%d' --graph
+ola =         log --pretty='%C(auto)%h: %s%d' --graph --all
+# Search the repository
+grep-code = grep --break --context 1 --full-name --heading --line-number --show-function
+grepc =     grep --break --context 1 --full-name --heading --line-number --show-function
+grep-log =  log --all --regexp-ignore-case --pretty='%C(auto)%h: %s%+D%Creset%n%C(reverse)%C(dim)%aN @ %ad = %ar%Creset%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S' --grep
+grepl =     log --all --regexp-ignore-case --pretty='%C(auto)%h: %s%+D%Creset%n%C(reverse)%C(dim)%aN @ %ad = %ar%Creset%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S' --grep
+grep-text = grep --break --context 1 --full-name --heading --ignore-case --line-number
+grept =     grep --break --context 1 --full-name --heading --ignore-case --line-number
+# Push current branch to origin
+push-to-origin = "!f(){ git push --set-upstream origin $(git current-branch) "$@"; }; f"
+pso =            "!f(){ git push --set-upstream origin $(git current-branch) "$@"; }; f"
+
+[clean]
+requireforce = true
+
+[color "branch"]
+current = cyan dim bold reverse
+local = green bold
+remote = red bold
+
+[color "decorate"]
+HEAD = cyan dim bold reverse
+branch = green bold
+remoteBranch = red bold
+stash = magenta dim bold reverse
+tag = magenta bold
+
+[color "diff"]
+context = white
+frag = blue dim bold reverse
+meta = yellow dim bold reverse
+new = green bold
+old = red bold
+whitespace = red dim bold reverse
+
+[color "grep"]
+context = white
+filename = yellow dim bold reverse
+function = white bold
+linenumber = blue dim bold reverse
+match = red bold
+selected = white
+separator = blue dim bold reverse
+
+[color "interactive"]
+error = red dim bold reverse
+header = white
+help = yellow bold
+prompt = white dim bold reverse
+
+[color "status"]
+added = green bold
+branch = cyan dim bold reverse
+changed = yellow bold
+header = white
+localBranch = green bold
+nobranch = red dim bold reverse
+remoteBranch = red bold
+unmerged = yellow dim bold reverse
+untracked = red bold
+
+[commit]
+cleanup = strip
+gpgSign = true
+template = ~/.config/git/commit_msg_template.txt
+verbose = true
+
+[core]
+editor = vim
+excludesfile = ~/.config/git/ignore
+pager = less --chop-long-lines --ignore-case --LONG-PROMPT --status-column --quit-if-one-screen
+whitespace = -space-before-tab,tab-in-indent
+
+[diff]
+renames = true
+submodule = log
+
+[help]
+autocorrect = 50
+
+[merge]
+conflictstyle = diff3
+ff = only
+
+[pull]
+ff = only
+rebase = true
+
+[push]
+default = upstream
+recursesubmodules = check
+
+[rerere]
+enabled = true
+
+[url "https://bitbucket.org/"]
+insteadOf = bb:
+
+[url "https://github.com/"]
+insteadOf = gh:
+
+[url "https://gitlab.com/"]
+insteadOf = gl:
+
+[user]
+name = Alexander Hess
+email = alexander@webartifex.biz
+signingKey = AB5C0E319D77350FBA6CF143344EA5AB10D868E0
