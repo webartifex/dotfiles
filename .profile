@@ -11,6 +11,8 @@ export REPOS="$HOME/repos"
 
 export LESSHISTFILE="$HOME/.lesshst"
 
+export PSQLRC="$HOME/.psqlrc"
+
 
 
 prepend-to-path () {  # if not already there
