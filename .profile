@@ -1,9 +1,11 @@
 # Executed by a login shell (e.g., bash, sh, or zsh) during start-up
 
 
+export EDITOR=vim
 export PAGER='less --chop-long-lines --ignore-case --LONG-PROMPT --no-init --status-column --quit-if-one-screen'
 export TERM=xterm-256color
 export TZ='Europe/Berlin'
+export VISUAL=$EDITOR
 
 export REPOS="$HOME/repos"
 
