@@ -280,6 +280,15 @@ _update_zplug() {
 }
 
 
+run-private-scripts() {  # in the Nextcloud
+    if [ -d "$HOME/data/getraenkemarkt/shell" ]; then
+        for file in $HOME/data/getraenkemarkt/shell/*.sh; do
+            source $file
+        done
+    fi
+}
+
+
 update-machine() {
     sudo --validate || return
 
