@@ -27,6 +27,9 @@ prepend-to-path "$HOME/.local/bin"
 
 # Shell-specific stuff
 
+# zsh-specific stuff is automatically sourced from
+# ~/.zshenv, ~/.zprofile, ~/.zlogin, and ~/.zshrc
+
 # Source ~/.bashrc if we are running inside a bash shell
 # because it is NOT automatically sourced by bash
 if [ -n "$BASH_VERSION" ]; then

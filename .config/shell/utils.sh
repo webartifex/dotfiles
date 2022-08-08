@@ -5,6 +5,10 @@ _command_exists() {
     command -v "$1" 1>/dev/null 2>&1
 }
 
+_in_zsh() {
+    [ -n "$ZSH_VERSION" ]
+}
+
 
 
 # Configure the keyboard:
@@ -209,10 +213,16 @@ _update_repositories() {
     cwd=$(pwd)
     cd $REPOS
 
+    # Otherwise the for-loop waites for manual input
+    # if it cd's into a folder with a ".env" file
+    ZSH_DOTENV_FILE='.do_not_run_dotenv'
+
     for dir in */; do
         cd "$REPOS/$dir" && echo "Fetching $REPOS/$dir"
         git fetch --all --prune
     done
+
+    ZSH_DOTENV_FILE='.env'
 
     _command_exists pass && echo "Fetching $HOME/.password-store" && pass git pull
     _update_dotfiles
@@ -232,6 +242,44 @@ _update_dotfiles() {
 }
 
 
+_update_zsh() {
+    _in_zsh || return
+
+    echo 'Updating zsh'
+    _update_omz_fork
+    _update_zplug
+}
+
+_update_omz_fork() {
+    _command_exists omz || return
+
+    # In a nutshell, `omz update` pulls the latest origin/master
+    # from the original "oh-my-zsh" repo
+    omz update
+
+    cwd=$(pwd)
+    cd $ZSH
+
+    git checkout --quiet forked  # most likely already the case
+
+    # Keep our personal "oh-my-zsh" fork up-to-date
+    # See: https://gitlab.webartifex.biz/alexander/oh-my-zsh
+    git rebase --quiet master
+    git push --quiet fork forked
+    git push --quiet fork master
+
+    cd $cwd
+}
+
+_update_zplug() {
+    _command_exists zplug || return
+
+    zplug update
+    zplug install  # ensure newly added plugins in ~/.zshrc are never forgotten
+    zplug load
+}
+
+
 update-machine() {
     sudo --validate || return
 
@@ -240,6 +288,7 @@ update-machine() {
     _command_exists flatpak && sudo flatpak update -y
     _command_exists snap && sudo snap refresh && _remove_old_snaps
     _update_repositories
+    _update_zsh
 
     sudo --reset-timestamp
 }

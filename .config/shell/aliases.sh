@@ -1,14 +1,34 @@
-# Shell aliases for bash
+# Shell aliases for bash and zsh
 
 
 _command_exists() {
     command -v "$1" 1>/dev/null 2>&1
 }
 
+_in_zsh() {
+    [ -n "$ZSH_VERSION" ]
+}
 
 
 # Re-run last command with sudo privileges
-alias ,,='sudo $(history -p !!)'
+if _in_zsh; then
+    alias ,,='sudo $(fc -ln -1)'
+else
+    alias ,,='sudo $(history -p !!)'
+fi
+
+
+# Convenient piping with zsh
+if _in_zsh; then
+    alias -g B='| bat'
+    alias -g F='| fzf'
+    alias -g G='| grep'
+    alias -g H='| head'
+    alias -g L='| less'
+    alias -g T='| tail'
+    alias -g NE='2 > /dev/null'
+    alias -g NUL='> /dev/null 2>&1'
+fi
 
 
 # (Non-)obvious synonyms
