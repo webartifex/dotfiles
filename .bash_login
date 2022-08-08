@@ -1,0 +1,8 @@
+# Executed by bash when a login shell starts
+
+# Mimic bash's default behavior explicitly 
+if [ -f "$HOME/.profile" ]; then
+    source "$HOME/.profile"
+else
+    source "$HOME/.bashrc"
+fi
