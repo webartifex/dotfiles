@@ -11,6 +11,19 @@
 # Locks
 .~lock.*#
 
+# Linux typical files we do not want under version control
+# Source: https://github.com/github/gitignore/blob/main/Global/Linux.gitignore
+#
+*~
+# Temporary files created if a process still has a handle open to a deleted file
+.fuse_hidden*
+# KDE directory preferences
+.directory
+# Linux trash folder possibly appearing on any partition or disk
+.Trash-*
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
 # pyenv
 .python-version
 
