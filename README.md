@@ -43,3 +43,10 @@ Additionally, two `virtualenv`s, called "interactive" and "utils", are also crea
    (e.g., [youtube-dl](https://github.com/ytdl-org/youtube-dl/)).
 
 Use `pyenv local ...` to specify a particular Python binary for a project.
+
+
+### Private Dotfiles
+
+After setting up the Python environments (i.e., the "utils"),
+    running `mackup restore` symlinks further dotfiles into `~/`.
+This only works for this project's maintainer.
