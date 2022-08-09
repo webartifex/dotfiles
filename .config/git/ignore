@@ -1,3 +1,10 @@
+# Generic temporary files
+*.backup
+*.bak
+*.orig
+*.temp
+*.tmp
+
 # LibreOffice
 # Source: https://github.com/github/gitignore/blob/main/Global/LibreOffice.gitignore
 #
