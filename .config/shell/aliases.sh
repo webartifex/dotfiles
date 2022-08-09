@@ -86,6 +86,25 @@ alias more='less'
 alias tree='tree -C --dirsfirst'
 
 
+# Make working with Python more convenient
+
+# Interactive shells
+alias py='python'
+alias bpy='bpython'
+alias ipy='ipython'
+
+if _command_exists poetry; then
+    alias pr='poetry run'
+fi
+
+if _command_exists pyenv; then
+    alias pyvenvs='pyenv virtualenvs --bare --skip-aliases'
+    alias pyver='pyenv version'
+    alias pyvers='pyenv versions --skip-aliases'
+    alias pywhich='pyenv which'
+fi
+
+
 # Various one-line utilities
 alias datetime='date +"%Y-%m-%d %H:%M:%S %z (%Z)"'
 alias datetime-iso='date --iso-8601=seconds'

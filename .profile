@@ -11,6 +11,10 @@ export REPOS="$HOME/repos"
 
 export LESSHISTFILE="$HOME/.lesshst"
 
+export PYENV_ROOT="$HOME/.pyenv"
+# No need for *.pyc files on a dev machine
+export PYTHONDONTWRITEBYTECODE=1
+
 export PSQLRC="$HOME/.psqlrc"
 
 
@@ -26,6 +30,7 @@ prepend-to-path () {  # if not already there
 
 prepend-to-path "$HOME/bin"
 prepend-to-path "$HOME/.local/bin"
+prepend-to-path "$PYENV_ROOT/bin"
 
 
 

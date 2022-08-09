@@ -1,0 +1,7 @@
+[general]
+
+# Make `bpython` and `python` share their history
+hist_file = ~/.python_history
+
+# No limit
+hist_length = 0

@@ -5,6 +5,12 @@
 [[ $- != *i* ]] && return
 
 
+# Check if a command can be found on the $PATH
+_command_exists() {
+    command -v "$1" 1>/dev/null 2>&1
+}
+
+
 
 # Enable Powerlevel10k instant prompt
 if [ -r "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/p10k-instant-prompt-${(%):-%n}.zsh" ]; then
@@ -61,7 +67,10 @@ plugins=(
     dirhistory
     dotenv             # config in ~/.zshenv; `_update_repositories` temporarily disables this
     git-escape-magic
+    invoke             # completions for invoke
     jsontools
+    pip                # completions for pip
+    poetry             # completions for poetry
     z
 )
 
@@ -122,6 +131,21 @@ zstyle ':completion:*:descriptions' format '%B%d%b'
 zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format 'No matches for: %d'
 zstyle ':completion:*' group-name ''
+
+
+# Enable completions for various tools
+
+# invoke -> see plugins above; alternatively use
+# _command_exists invoke && eval "$(invoke --print-completion-script=zsh)"
+
+_command_exists nox && eval "$(register-python-argcomplete nox)"
+
+# pip -> see plugins above; alternatively use
+# _command_exists pip && eval "$(pip completion --zsh)"
+
+_command_exists pipx && eval "$(register-python-argcomplete pipx)"
+
+# poetry -> see plugins above; no alternative here
 
 
 

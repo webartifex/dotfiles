@@ -24,3 +24,22 @@ Further, `zsh` is set up
 Otherwise, `~/.profile` is probably *not* sourced.
 
 **Important**: Don't forget to back up your current dotfiles!
+
+
+### Python Development Environments
+
+The develop environments for Python are managed via [`pyenv`](https://github.com/pyenv/pyenv).
+
+To set them up, run:
+
+```bash
+create-or-update-python-envs
+```
+
+Several Python versions are installed.
+Additionally, two `virtualenv`s, called "interactive" and "utils", are also created:
+ - "interactive" is the default environment, and
+ - "utils" hosts globally available utilities
+   (e.g., [youtube-dl](https://github.com/ytdl-org/youtube-dl/)).
+
+Use `pyenv local ...` to specify a particular Python binary for a project.

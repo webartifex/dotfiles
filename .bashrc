@@ -5,6 +5,12 @@
 [[ $- != *i* ]] && return
 
 
+# Check if a command can be found on the $PATH
+_command_exists() {
+    command -v "$1" 1>/dev/null 2>&1
+}
+
+
 
 # Enable XON/XOFF software flow control
 stty -ixon
@@ -68,6 +74,13 @@ if ! shopt -oq posix; then
         source /etc/bash_completion
     fi
 fi
+
+# Enable completions for various tools
+_command_exists invoke && eval "$(invoke --print-completion-script=bash)"
+_command_exists nox && eval "$(register-python-argcomplete nox)"
+_command_exists pip && eval "$(pip completion --bash)"
+_command_exists pipx && eval "$(register-python-argcomplete pipx)"
+_command_exists poetry && eval "$(poetry completions bash)"
 
 # Add tab completion for all aliases to commands with completion functions
 # (must come after bash completions have been set up)
@@ -193,5 +206,21 @@ _prompt_jobs() {  # Indicate running background jobs with a"%"
       (( $(jobs -rp | wc -l) )) && printf "\033[0;32m %\033[0m"
 }
 
-PS1='${chroot:+($_debian_chroot)}\w$(_prompt_git)$(_prompt_jobs) > '
+_prompt_pyenv() {  # Mimic zsh's pyenv/venv integration
+    if [ -n "$VIRTUAL_ENV" ]; then
+        echo -e "\033[0;36m py $(python -c "import os, sys; (hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)) and print(os.path.basename(sys.prefix))")\033[0m"
+    elif [ -n "$PYENV_VERSION" ]; then
+        if [ "$PYENV_VERSION" != "system" ]; then
+            echo -e "\033[0;36m py $PYENV_VERSION\033[0m"
+        fi
+    elif [ -f "$(pwd)/.python-version" ]; then
+        echo -e "\033[0;36m py $(cat .python-version | sed ':a;N;$!ba;s/\n/:/g')\033[0m"
+    fi
+}
+
+# Disable the default prompts set by pyenv and venv
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+PS1='${chroot:+($_debian_chroot)}\w$(_prompt_git)$(_prompt_jobs)$(_prompt_pyenv) > '
 PS2='... '
