@@ -210,7 +210,7 @@ _py2_version='2.7.18'
 _py3_site_packages=('black' 'pipenv' 'poetry')
 
 # The pyenv virtualenv "utils" contains some globally available tools (e.g., mackup)
-_py3_utils=('mackup' 'youtube-dl')
+_py3_utils=('leglight' 'mackup' 'youtube-dl')
 
 # Important: this REMOVES the old ~/.pyenv installation
 _install_pyenv() {
