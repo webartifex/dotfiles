@@ -9,6 +9,8 @@ export VISUAL=$EDITOR
 
 export REPOS="$HOME/repos"
 
+export BAT_CONFIG_PATH="$HOME/.config/bat/config"
+
 export LESSHISTFILE="$HOME/.lesshst"
 
 export PYENV_ROOT="$HOME/.pyenv"
