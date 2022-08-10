@@ -402,6 +402,13 @@ _update_python() {
 }
 
 
+_restore_gnome() {
+    for file in $HOME/.config/gnome-settings/*.ini; do
+        dconf load / < $file
+    done
+}
+
+
 run-private-scripts() {  # in the Nextcloud
     if [ -d "$HOME/data/getraenkemarkt/shell" ]; then
         for file in $HOME/data/getraenkemarkt/shell/*.sh; do
@@ -421,6 +428,7 @@ update-machine() {
     _update_repositories
     _update_zsh
     _update_python
+    _restore_gnome
 
     sudo --reset-timestamp
 }
