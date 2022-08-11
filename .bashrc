@@ -61,8 +61,7 @@ shopt -s lithist
 
 
 # Initialize various utilities and aliases
-source "$HOME/.config/shell/utils.sh"
-source "$HOME/.config/shell/aliases.sh"
+source "$HOME/.config/shell/init.sh"
 
 
 
