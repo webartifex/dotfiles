@@ -130,6 +130,11 @@ nmap Q  <Nop>
 cnoremap w!!  w !sudo tee % >/dev/null
 
 
+" Fix mouse issues with Alacritty terminal
+" Source: https://wiki.archlinux.org/title/Alacritty#Mouse_not_working_properly_in_Vim
+set ttymouse=sgr
+
+
 " Enable the mouse for selections, including a toggle for this mode
 set mouse=a
 let g:mouse_enabled=1
