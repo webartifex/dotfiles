@@ -65,3 +65,9 @@ _command_exists fdfind && alias fd='fdfind'
 _command_exists neofetch && alias nf='neofetch'
 _command_exists ranger && alias rn='ranger'
 _command_exists screenfetch && alias sf='screenfetch'
+
+
+# Alias to align commands in ~/.config/i3/config
+# Debian/Arch => dex
+# Fedora => dex-autostart
+_command_exists dex-autostart && alias dex='dex-autostart'
