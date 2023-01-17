@@ -11,7 +11,7 @@ cd $HOME
 
 # Get the latest ~/.dotfiles, possibly replacing the old ones
 rm -rf "$HOME/.dotfiles" >/dev/null
-git clone --bare https://git.webartifex.biz/alexander/dotfiles.git "$HOME/.dotfiles"
+git clone --bare https://code.webartifex.biz/alexander/dotfiles.git "$HOME/.dotfiles"
 
 # Distribute the dotfiles in $HOME
 git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME checkout --force
@@ -24,7 +24,7 @@ if _command_exists zsh; then
     export ZSH="$HOME/.oh-my-zsh"
     rm -rf $ZSH >/dev/null
     # Let's NOT use the main repository but our personal fork
-    git clone --origin fork --branch forked https://git.webartifex.biz/alexander/oh-my-zsh.git $ZSH
+    git clone --origin fork --branch forked https://code.webartifex.biz/alexander/oh-my-zsh.git $ZSH
     cd $ZSH
     git remote add origin https://github.com/ohmyzsh/ohmyzsh.git
     cd $HOME

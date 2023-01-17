@@ -16,9 +16,9 @@ _update_apt() {
 
     echo 'Updating apt packages'
     sudo apt update
-    sudo apt upgrade
+    sudo apt dist-upgrade
     sudo apt autoremove
-    sudo apt autoclean
+    sudo apt clean
 }
 
 _update_dnf() {
@@ -97,9 +97,9 @@ _update_omz_fork() {
     git checkout --quiet forked  # most likely already the case
 
     # Keep our personal "oh-my-zsh" fork up-to-date
-    # See: https://gitlab.webartifex.biz/alexander/oh-my-zsh
+    # See: https://code.webartifex.biz/alexander/oh-my-zsh
     git rebase --quiet master
-    git push --quiet fork forked
+    git push --quiet fork forked --force
     git push --quiet fork master
 
     cd $cwd
