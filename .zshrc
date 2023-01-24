@@ -51,12 +51,16 @@ unalias -a
 
 # Set these environment variables here (and not in ~/.profile)
 # due to conflict/overlap with bash
-export HISTFILE="$HOME/.zhistory"  # default name by oh-my-zsh
-export HISTSIZE=999999             # number of lines kept in memory
-export SAVEHIST=999999             # number of lines kept in $HISTFILE
+
+# Can NOT be $HOME/.zhistory as zsh destroys mackup's symbolic link
+export HISTFILE="$HOME/data/getraenkemarkt/mackup/.zhistory"
+
+export HISTSIZE=999999  # number of lines kept in memory
+export SAVEHIST=999999  # number of lines kept in $HISTFILE
 
 # Append to the $HISTFILE rather than overwrite it
 setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
 
 
 
