@@ -154,7 +154,7 @@ update-machine() {
 
     _update_apt
     _update_dnf
-    _command_exists flatpak && sudo flatpak update -y
+    _command_exists flatpak && sudo flatpak update -y && sudo flatpak uninstall --unused
     _command_exists snap && sudo snap refresh && _remove_old_snaps
     _update_repositories
     _update_zsh
