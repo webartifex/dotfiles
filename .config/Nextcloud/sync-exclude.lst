@@ -47,3 +47,6 @@ My Saved Places.
 \#*#
 
 *.sb-*
+
+# LibreOffice's lock files
+.lock
