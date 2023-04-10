@@ -57,7 +57,7 @@ _update_repositories() {
 
     ZSH_DOTENV_FILE='.env'
 
-    _command_exists pass && echo "Fetching $HOME/.password-store" && pass git pull
+    _command_exists pass && echo "Fetching $XDG_DATA_HOME/pass" && pass git pull
     _update_dotfiles
 
     cd $cwd

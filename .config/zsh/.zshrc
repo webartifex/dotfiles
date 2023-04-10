@@ -52,8 +52,8 @@ unalias -a
 # Set these environment variables here (and not in ~/.profile)
 # due to conflict/overlap with bash
 
-# Can NOT be $HOME/.zhistory as zsh destroys mackup's symbolic link
-export HISTFILE="$HOME/data/getraenkemarkt/mackup/.zhistory"
+# Note: This file is NOT synced by mackup as zsh destroys the symbolic link
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
 
 export HISTSIZE=999999  # number of lines kept in memory
 export SAVEHIST=999999  # number of lines kept in $HISTFILE
@@ -84,7 +84,7 @@ source "$ZSH/oh-my-zsh.sh"
 
 # Initialize zplug's plugins
 
-source "$HOME/.zplug/init.zsh"  # config in ~/.zshenv
+source "$XDG_DATA_HOME/zplug/init.zsh"  # config in ~/.config/zsh/.zshenv
 
 # Must use double quotes in this section
 # Source: https://github.com/zplug/zplug#example
@@ -178,4 +178,4 @@ bindkey -M vicmd 'j' history-substring-search-down
 
 
 # Enable Powerlevel10k "full" prompt
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f $XDG_CONFIG_HOME/zsh/.p10k.zsh ]] || source $XDG_CONFIG_HOME/zsh/.p10k.zsh

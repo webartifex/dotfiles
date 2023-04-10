@@ -5,8 +5,9 @@
 " Use VIM improved mode
 set nocompatible
 
+
 " Set environment variables for convenient usage
-let $RC="$HOME/.vim/vimrc"
+let $RC="$XDG_CONFIG_HOME/vim/vimrc"
 let $RTP=split(&runtimepath, ',')[0]
 
 " Disable VIM's startup message
@@ -39,19 +40,22 @@ set hidden
 set path=.,**
 
 
-" Store all vim-related working files in the ~/.vim folder
-set viminfo+=n~/.vim/viminfo
+" Store all vim-related working files in the ~/.local/state/vim folder
+set viminfo+=n$XDG_STATE_HOME/vim/viminfo
 " Use dedicated folders to store temporary backup, swap, and undo files
 " (the // means that VIM adapts names automatically to avoid duplicates)
-set backupdir=~/.vim/backup//
-set directory=~/.vim/swap//
-set undodir=~/.vim/undo//
+set backupdir=$XDG_STATE_HOME/vim/backup//
+set directory=$XDG_STATE_HOME/vim/swap//
+set undodir=$XDG_STATE_HOME/vim/undo//
 
 " To disable any of the temporary files, uncomment one of the following
 " set nobackup
 " set nowritebackup
 " set noswapfile
 " set noundofile
+
+
+set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
 
 
 " Show the filename in the terminal window's title bar

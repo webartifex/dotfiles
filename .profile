@@ -1,26 +1,48 @@
 # Executed by a login shell (e.g., bash, sh, or zsh) during start-up
 
 
+
+# Shell-independent stuff
+
+
+# Configure the standard XDG base directories
+# Further Info: https://wiki.archlinux.org/title/XDG_Base_Directory
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"  # also set temporarily in ~/.config/shell/init_dotfiles.sh
+export XDG_STATE_HOME="$HOME/.local/state"  # also set temporarily in ~/.config/shell/init_dotfiles.sh
+
+# Move common tools' config and cache files into XDG directories
+export BAT_CONFIG_PATH="$XDG_CONFIG_PATH/bat/config"
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export PSQLRC="$XDG_CONFIG_HOME/psql/psqlrc"
+export SSB_HOME="$XDG_DATA_HOME"/zoom
+export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"
+
+
+# Generic shell configs
 export EDITOR=vim
 export PAGER='less --chop-long-lines --ignore-case --LONG-PROMPT --no-init --status-column --quit-if-one-screen'
 export TERM=xterm-256color
 export TZ='Europe/Berlin'
 export VISUAL=$EDITOR
 
+
+# Convenience variables for easier access of some locations
 export REPOS="$HOME/repos"
 
-export BAT_CONFIG_PATH="$HOME/.config/bat/config"
 
-export LESSHISTFILE="$HOME/.lesshst"
-
+# Python-specific configs
 export PYENV_ROOT="$HOME/.pyenv"
 # No need for *.pyc files on a dev machine
 export PYTHONDONTWRITEBYTECODE=1
 
-export PSQLRC="$HOME/.psqlrc"
 
-
-
+# Put local binaries on the $PATH
 prepend-to-path () {  # if not already there
     if [ -d "$1" ] ; then
         case :$PATH: in
@@ -38,8 +60,11 @@ prepend-to-path "$PYENV_ROOT/bin"
 
 # Shell-specific stuff
 
+
 # zsh-specific stuff is automatically sourced from
-# ~/.zshenv, ~/.zprofile, ~/.zlogin, and ~/.zshrc
+# $XDG_CONFIG_HOME/zsh/.zshenv, $XDG_CONFIG_HOME/zsh/.zprofile,
+# $XDG_CONFIG_HOME/zsh/.zlogin, and $XDG_CONFIG_HOME/.zshrc
+
 
 # Source ~/.bashrc if we are running inside a bash shell
 # because it is NOT automatically sourced by bash

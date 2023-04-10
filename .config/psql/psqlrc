@@ -22,7 +22,8 @@
 
 -- Use separate history files per database and
 -- keep them in one folder (for easier sync with mackup)
-\set HISTFILE ~/.config/psql/.psql_history- :DBNAME
+-- under $XDG_STATE_HOME/psql
+\set HISTFILE ~/.local/state/psql/history- :DBNAME
 
 -- Don't store the same SQL statement repeatedly
 \set HISTCONTROL ignoredups

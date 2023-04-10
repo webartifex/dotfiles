@@ -2,8 +2,14 @@
 # (it's kind of a zsh-only ~/.profile file)
 
 
-export ZSH="$HOME/.oh-my-zsh"
-export ZPLUG_HOME="$HOME/.zplug"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+export ZPLUG_HOME="$XDG_DATA_HOME/zplug"
+export _Z_DATA="$XDG_DATA_HOME/z"
 
 
 # Use <Up> key to auto-complete a partially typed command
@@ -32,4 +38,3 @@ export ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump-$HOST-$ZSH_VERSI
 # Automatically source ".env" files in folders
 # Source: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/dotenv
 export ZSH_DOTENV_FILE=".env"
-

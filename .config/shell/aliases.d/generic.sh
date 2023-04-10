@@ -56,7 +56,7 @@ _command_exists exa && alias exa='exa --group-directories-first --git --time-sty
 _command_exists netstat && alias ports='netstat -tulanp'
 _command_exists screenfetch && alias screenfetch='screenfetch -n'
 alias uptime='uptime --pretty'
-alias wget='wget --continue'
+alias wget="wget --continue --hsts-file=$XDG_STATE_HOME/wget/history"
 
 
 # Create shorter aliases for various utilities

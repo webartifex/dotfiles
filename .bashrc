@@ -40,7 +40,7 @@ shopt -s checkwinsize
 
 # Set these environment variables here (and not in ~/.profile)
 # due to conflict/overlap with zsh
-export HISTFILE="$HOME/.bash_history"
+export HISTFILE="$XDG_STATE_HOME/bash/history"
 export HISTSIZE=999999      # number of lines kept in memory
 export HISTFILESIZE=999999  # number of lines kept in $HISTFILE
 
