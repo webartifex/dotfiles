@@ -2,6 +2,7 @@
 # such that they are available within a user's $HOME as common "dotfiles"
 
 
+export XDG_BIN_HOME="$HOME/.local/bin"  # temporarily set here; mainly set in ~/.profile
 export XDG_DATA_HOME="$HOME/.local/share"  # temporarily set here; mainly set in ~/.profile
 
 
@@ -22,6 +23,27 @@ git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME checkout --force
 git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME config --local status.showUntrackedFiles no
 # Dirty Fix: Otherwise `gnupg` emits a warning
 [ -d "$XDG_DATA_HOME/gnupg" ] && chmod 700 $XDG_DATA_HOME/gnupg
+
+
+if _command_exists pip; then
+
+    # Ensure `pipx` is installed in the user's local environment
+    pip install --upgrade --user pipx
+
+    # (Re-)Install `mackup` via `pipx` in the user's local environment
+    export PIPX_BIN_DIR=$XDG_BIN_HOME
+    export PIPX_HOME="$XDG_DATA_HOME/pipx"
+    $XDG_BIN_HOME/pipx uninstall mackup
+    $XDG_BIN_HOME/pipx install mackup
+
+    # Litte Hack: Make `mackup` respect the XDG directory structure
+    sed -in 's/VERSION = \".*\"/VERSION = \"0.999.0\"/g' $HOME/.local/**/mackup/constants.py
+    sed -in 's/CUSTOM_APPS_DIR = \"\.mackup\"/CUSTOM_APPS_DIR = \"\.config\/mackup\"/g' $HOME/.local/**/mackup/constants.py
+    sed -in 's/MACKUP_CONFIG_FILE = \"\.mackup\.cfg\"/MACKUP_CONFIG_FILE = \"\.config\/mackup\/mackup\.cfg\"/g' $HOME/.local/**/mackup/constants.py
+
+    $XDG_BIN_HOME/mackup restore
+
+fi
 
 
 if _command_exists zsh; then
@@ -58,6 +80,17 @@ fi
 
 # Disable the creation of ~/.sudo_as_admin_successful
 echo 'Defaults !admin_flag' | sudo tee /etc/sudoers.d/disable_admin_note
+
+
+# Warn user if ~/.local/pipx already exists
+# => As we use the custom $XDG_DATA_HOME/pipx location,
+# the user should NOT `pipx`'s default install location as well
+if [ -d "$HOME/.local/pipx" ]; then
+    echo
+    echo "~/.local/pipx already existed!"
+    echo "It is recommended to delete this location in favor of $XDG_DATA_HOME/pipx"
+    echo
+fi
 
 
 echo
