@@ -13,9 +13,9 @@ _command_exists() {
 cd $HOME
 
 
-# Get the latest ~/.dotfiles, possibly replacing the old ones
-rm -rf "$HOME/.dotfiles" >/dev/null
-git clone --bare https://code.webartifex.biz/alexander/dotfiles.git "$HOME/.dotfiles"
+# Get the latest $XDG_DATA_HOME/dotfiles, possibly replacing the old ones
+rm -rf "$XDG_DATA_HOME/dotfiles" >/dev/null
+git clone --bare https://code.webartifex.biz/alexander/dotfiles.git "$XDG_DATA_HOME/dotfiles"
 
 # Distribute the dotfiles in $HOME
 git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME checkout --force

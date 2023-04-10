@@ -63,15 +63,15 @@ _update_repositories() {
     cd $cwd
 }
 
-# Update the ~/.dotfiles repository
+# Update the $XDG_DATA_HOME/dotfiles repository
 _update_dotfiles() {
-    echo "Fetching $HOME/.dotfiles"
+    echo "Fetching $XDG_DATA_HOME/dotfiles"
     # The `dotfiles` alias is defined in ~/.bashrc at the end of the
     # "Shell Utilities & Aliases" section and can NOT be used here
-    git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME stash --quiet 
-    git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME fetch --all --prune
-    git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME pull --rebase --quiet
-    git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME stash pop  # --quiet is ignored
+    git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME stash --quiet 
+    git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME fetch --all --prune
+    git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME pull --rebase --quiet
+    git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME stash pop  # --quiet is ignored
 }
 
 

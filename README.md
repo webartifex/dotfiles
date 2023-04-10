@@ -15,7 +15,7 @@ curl https://code.webartifex.biz/alexander/dotfiles/-/raw/main/.config/shell/ini
 ```
 
 This gives you a local copy of the latest version of this repository
-    (located in `~/.dotfiles`)
+    (located in `$XDG_DATA_HOME/dotfiles`)
     and initializes all the dotfiles provided here on the system.
 Further, `zsh` is set up
     with [`oh-my-zsh`](https://ohmyz.sh/) and [`zplug`](https://github.com/zplug/zplug)

@@ -39,7 +39,7 @@ alias help='man'
 # Various one-line utilities
 alias datetime='date +"%Y-%m-%d %H:%M:%S %z (%Z)"'
 alias datetime-iso='date --iso-8601=seconds'
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles='git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME'
 alias external-ip="curl https://icanhazip.com"
 alias external-ip-alt="curl https://ipinfo.io/ip\?token=cfd78a97e15ebf && echo"
 alias external-ip-extended-infos="curl https://ipinfo.io/json\?token=cfd78a97e15ebf && echo"
