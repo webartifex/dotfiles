@@ -8,10 +8,8 @@ This repository contains useful (config) files that I use on my machines.
 On a freshly set up machine, run:
 
 ```bash
-curl https://code.webartifex.biz/alexander/dotfiles/-/raw/main/.config/shell/init_dotfiles.sh \
-     > ./init_dotfiles.sh \
-  && source ./init_dotfiles.sh \
-  && rm ./init_dotfiles.sh
+curl https://code.webartifex.biz/alexander/dotfiles/-/raw/main/.local/share/dotfiles/setup.sh \
+     > ./setup.sh && source ./setup.sh && rm ./setup.sh
 ```
 
 This gives you a local copy of the latest version of this repository

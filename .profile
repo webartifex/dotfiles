@@ -9,8 +9,8 @@
 # Further Info: https://wiki.archlinux.org/title/XDG_Base_Directory
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"  # also set temporarily in ~/.config/shell/init_dotfiles.sh
-export XDG_STATE_HOME="$HOME/.local/state"  # also set temporarily in ~/.config/shell/init_dotfiles.sh
+export XDG_DATA_HOME="$HOME/.local/share"  # also set temporarily in $XDG_DATA_HOME/dotfiles/setup.sh
+export XDG_STATE_HOME="$HOME/.local/state"  # also set temporarily in $XDG_DATA_HOME/dotfiles/setup.sh
 
 # Move common tools' config and cache files into XDG directories
 export BAT_CONFIG_PATH="$XDG_CONFIG_PATH/bat/config"
