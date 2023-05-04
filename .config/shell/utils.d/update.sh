@@ -140,6 +140,8 @@ _restore_gnome() {
 
 
 run-private-scripts() {  # in the Nextcloud
+    sudo --validate || return
+
     if [ -d "$HOME/data/getraenkemarkt/shell" ]; then
         for file in $HOME/data/getraenkemarkt/shell/*.sh; do
             source $file
@@ -160,6 +162,7 @@ update-machine() {
     _update_zsh
     _update_python
     _restore_gnome
+    run-private-scripts
 
     sudo --reset-timestamp
 }
