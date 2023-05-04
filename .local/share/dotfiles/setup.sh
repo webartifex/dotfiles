@@ -25,6 +25,17 @@ git --git-dir=$XDG_DATA_HOME/dotfiles/ --work-tree=$HOME config --local status.s
 [ -d "$XDG_DATA_HOME/gnupg" ] && chmod 700 $XDG_DATA_HOME/gnupg
 
 
+if _command_exists python3; then
+
+    # Set up a Python venv to host the scripts controlling the Elgato keylights in my office
+    python3 -m venv $XDG_DATA_HOME/elgato
+    $XDG_DATA_HOME/elgato/bin/pip list
+    $XDG_DATA_HOME/elgato/bin/pip install --upgrade pip setuptools
+    $XDG_DATA_HOME/elgato/bin/pip install leglight
+
+fi
+
+
 if _command_exists pip; then
 
     # Ensure `pipx` is installed in the user's local environment
