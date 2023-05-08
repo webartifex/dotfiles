@@ -131,7 +131,7 @@ _update_python() {
 
 
 
-_restore_gnome() {
+restore-gnome() {
     for file in $HOME/.config/gnome-settings/*.ini; do
         dconf load / < $file
     done
@@ -178,7 +178,7 @@ update-machine() {
     _update_repositories
     _update_zsh
     _update_python
-    _restore_gnome
+    restore-gnome
     _fix_locations
     run-private-scripts
 
