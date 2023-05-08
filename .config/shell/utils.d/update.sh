@@ -139,6 +139,23 @@ _restore_gnome() {
 
 
 
+_fix_locations() {
+
+    # Gnome Seahorse (i.e., "Keyrings") uses ~/.pki by default but also
+    # detects $XDG_DATA_HOME/pki if it is there and uses it insead;
+    # setting this explicitly via an environment variable is not possible
+    if [ -d "$HOME/.pki" ]; then
+        if [ -d "$XDG_DATA_HOME/pki" ]; then
+            echo "Warning: both $HOME/.pki and $XDG_DATA_HOME/pki exist!"
+        else
+            mv "$HOME/.pki" "$XDG_DATA_HOME/pki"
+        fi
+    fi
+
+}
+
+
+
 run-private-scripts() {  # in the Nextcloud
     sudo --validate || return
 
@@ -162,6 +179,7 @@ update-machine() {
     _update_zsh
     _update_python
     _restore_gnome
+    _fix_locations
     run-private-scripts
 
     sudo --reset-timestamp
