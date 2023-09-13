@@ -41,6 +41,8 @@ _remove_old_snaps() {
 
 # Update local git repositories (mostly ~/repos)
 _update_repositories() {
+    [ -d $REPOS ] || return
+
     echo 'Updating repositories'
 
     cwd=$(pwd)
