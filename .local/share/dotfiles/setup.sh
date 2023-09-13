@@ -41,18 +41,22 @@ if _command_exists pip; then
     # Ensure `pipx` is installed in the user's local environment
     pip install --upgrade --user pipx
 
-    # (Re-)Install `mackup` via `pipx` in the user's local environment
-    export PIPX_BIN_DIR=$XDG_BIN_HOME
-    export PIPX_HOME="$XDG_DATA_HOME/pipx"
-    $XDG_BIN_HOME/pipx uninstall mackup
-    $XDG_BIN_HOME/pipx install mackup
+    if [ -d "$HOME/data/getraenkemarkt" ]; then
 
-    # Litte Hack: Make `mackup` respect the XDG directory structure
-    sed -in 's/VERSION = \".*\"/VERSION = \"0.999.0\"/g' $HOME/.local/**/mackup/constants.py
-    sed -in 's/CUSTOM_APPS_DIR = \"\.mackup\"/CUSTOM_APPS_DIR = \"\.config\/mackup\"/g' $HOME/.local/**/mackup/constants.py
-    sed -in 's/MACKUP_CONFIG_FILE = \"\.mackup\.cfg\"/MACKUP_CONFIG_FILE = \"\.config\/mackup\/mackup\.cfg\"/g' $HOME/.local/**/mackup/constants.py
+        # (Re-)Install `mackup` via `pipx` in the user's local environment
+        export PIPX_BIN_DIR=$XDG_BIN_HOME
+        export PIPX_HOME="$XDG_DATA_HOME/pipx"
+        $XDG_BIN_HOME/pipx uninstall mackup
+        $XDG_BIN_HOME/pipx install mackup
 
-    $XDG_BIN_HOME/mackup restore
+        # Litte Hack: Make `mackup` respect the XDG directory structure
+        sed -in 's/VERSION = \".*\"/VERSION = \"0.999.0\"/g' $HOME/.local/**/mackup/constants.py
+        sed -in 's/CUSTOM_APPS_DIR = \"\.mackup\"/CUSTOM_APPS_DIR = \"\.config\/mackup\"/g' $HOME/.local/**/mackup/constants.py
+        sed -in 's/MACKUP_CONFIG_FILE = \"\.mackup\.cfg\"/MACKUP_CONFIG_FILE = \"\.config\/mackup\/mackup\.cfg\"/g' $HOME/.local/**/mackup/constants.py
+
+        $XDG_BIN_HOME/mackup restore
+
+    fi
 
 fi
 
