@@ -134,6 +134,8 @@ _update_python() {
 
 
 restore-gnome() {
+    _command_exists dconf || return
+
     for file in $HOME/.config/gnome-settings/*.ini; do
         dconf load / < $file
     done
