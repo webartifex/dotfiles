@@ -100,9 +100,25 @@ _update_omz_fork() {
 
     # Keep our personal "oh-my-zsh" fork up-to-date
     # See: https://code.webartifex.biz/alexander/oh-my-zsh
-    git rebase --quiet master
-    git push --quiet fork forked --force
-    git push --quiet fork master
+    # Note: Without a proper GPG key, the rebasing is done without signing
+
+    # First, check if `gpg` exists and works in general
+    # as it might not be set up on some servers
+    if _command_exists gpg; then
+        gpg --list-keys > /dev/null
+        rv=$?
+    else
+        rv=1
+    fi
+
+    if [ $rv -eq 0 ] && [ $(gpg --list-keys | grep "AB5C0E319D77350FBA6CF143344EA5AB10D868E0") ]; then
+        git rebase --quiet master
+        # Only push a properly rebased and signed fork
+        git push --quiet fork forked --force
+        git push --quiet fork master
+    else
+        git -c commit.gpgsign=false rebase --quiet master
+    fi
 
     cd $cwd
 }
