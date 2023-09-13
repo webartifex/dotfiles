@@ -89,10 +89,6 @@ if _command_exists zsh; then
 fi
 
 
-# Disable the creation of ~/.sudo_as_admin_successful
-echo 'Defaults !admin_flag' | sudo tee /etc/sudoers.d/disable_admin_note
-
-
 # Warn user if ~/.local/pipx already exists
 # => As we use the custom $XDG_DATA_HOME/pipx location,
 # the user should NOT `pipx`'s default install location as well
