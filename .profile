@@ -78,3 +78,9 @@ if [ -n "$BASH_VERSION" ]; then
         source "$HOME/.bashrc"
     fi
 fi
+
+
+# Source ~/.profile_local, which holds machine-specific ENV variables
+if [ -f "$HOME/.profile_local" ]; then
+    source "$HOME/.profile_local"
+fi
