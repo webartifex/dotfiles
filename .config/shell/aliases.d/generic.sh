@@ -36,6 +36,10 @@ alias cls='clear'
 alias help='man'
 
 
+# Edit the $HISTFILE
+alias HISTFILE="vi $HISTFILE"
+
+
 # Various one-line utilities
 alias datetime='date +"%Y-%m-%d %H:%M:%S %z (%Z)"'
 alias datetime-iso='date --iso-8601=seconds'
