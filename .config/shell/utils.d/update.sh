@@ -179,8 +179,8 @@ _fix_locations() {
 run-private-scripts() {  # in the Nextcloud
     sudo --validate || return
 
-    if [ -d "$HOME/data/getraenkemarkt/shell" ]; then
-        for file in $HOME/data/getraenkemarkt/shell/*.sh; do
+    if [ -d "$HOME/Documents/Getraenkemarkt/Shell" ]; then
+        for file in $HOME/Documents/Getraenkemarkt/Shell/*.sh; do
             source $file
         done
     fi
