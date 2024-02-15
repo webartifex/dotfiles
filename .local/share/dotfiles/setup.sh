@@ -41,7 +41,7 @@ if _command_exists pip; then
     # Ensure `pipx` is installed in the user's local environment
     pip install --upgrade --user pipx
 
-    if [ -d "$HOME/data/getraenkemarkt" ]; then
+    if [ -d "$HOME/Cloud/Getraenkemarkt" ]; then
 
         # (Re-)Install `mackup` via `pipx` in the user's local environment
         export PIPX_BIN_DIR=$XDG_BIN_HOME
