@@ -37,7 +37,7 @@ export VISUAL=$EDITOR
 
 
 # Convenience variables for easier access of some locations
-export REPOS="$HOME/repos"
+export REPOS="$HOME/Repositories"
 
 
 # Python-specific configs
