@@ -41,6 +41,8 @@ if _command_exists pip; then
     # Ensure `pipx` is installed in the user's local environment
     pip install --upgrade --user pipx
 
+    pipx install rexi
+
     if [ -d "$HOME/Cloud/Getraenkemarkt" ]; then
 
         # (Re-)Install `mackup` via `pipx` in the user's local environment
