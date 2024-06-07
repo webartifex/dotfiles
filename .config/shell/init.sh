@@ -35,9 +35,9 @@ _in_wayland () {
 
 
 # Configure the keyboard:
-#  - make right alt and menu keys the compose key, e.g., for German Umlauts
+#  - make right alt the compose key, e.g., for German Umlauts
 #  - make caps lock a ctrl modifier and Esc key
-_in_x11 && setxkbmap us -option 'compose:menu,compose:ralt,caps:ctrl_modifier,lv3:ralt_switch'
+_in_x11 && setxkbmap us -option 'compose:ralt,caps:ctrl_modifier,lv3:menu_switch'
 _command_exists xcape && xcape -e "Caps_Lock=Escape"
 
 
