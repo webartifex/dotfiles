@@ -43,8 +43,9 @@ export REPOS="$HOME/Repositories"
 # Python-specific configs
 export PIPX_BIN_DIR=$XDG_BIN_HOME
 export PYENV_ROOT="$HOME/.pyenv"
-# No need for *.pyc files on a dev machine
-export PYTHONDONTWRITEBYTECODE=1
+# No need for *.pyc files (and __pycache__ folders) to be within project folders
+# Note: `export PYTHONDONTWRITEBYTECODE=1` would disable them entirely
+export PYTHONPYCACHEPREFIX=/tmp/pycache
 
 
 # Put local binaries on the $PATH
