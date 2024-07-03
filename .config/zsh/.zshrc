@@ -66,20 +66,23 @@ setopt INC_APPEND_HISTORY
 
 # Initialize oh-my-zsh's plugins
 
-plugins=(
-    command-not-found
-    dirhistory
-    dotenv             # config in ~/.zshenv; `_update_repositories` temporarily disables this
-    git-escape-magic
-    invoke             # completions for invoke
-    jsontools
-    pip                # completions for pip
-    poetry             # completions for poetry
-    z
-)
+if [ -r "$ZSH/oh-my-zsh.sh" ]; then
 
-source "$ZSH/oh-my-zsh.sh"
+    plugins=(
+        command-not-found
+        dirhistory
+        dotenv             # config in ~/.zshenv; `_update_repositories` temporarily disables this
+        git-escape-magic
+        invoke             # completions for invoke
+        jsontools
+        pip                # completions for pip
+        poetry             # completions for poetry
+        z
+    )
 
+    source "$ZSH/oh-my-zsh.sh"
+
+fi
 
 
 # Initialize zplug's plugins
