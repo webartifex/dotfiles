@@ -87,24 +87,28 @@ fi
 
 # Initialize zplug's plugins
 
-source "$XDG_DATA_HOME/zplug/init.zsh"  # config in ~/.config/zsh/.zshenv
+if [ -r "$XDG_DATA_HOME/zplug/init.zsh" ]; then
 
-# Must use double quotes in this section
-# Source: https://github.com/zplug/zplug#example
+    source "$XDG_DATA_HOME/zplug/init.zsh"  # config in ~/.config/zsh/.zshenv
 
-# Make zplug manage itself like a plugin
-# Source: https://github.com/zplug/zplug#let-zplug-manage-zplug
-zplug "zplug/zplug", hook-build:"zplug --self-manage"
+    # Must use double quotes in this section
+    # Source: https://github.com/zplug/zplug#example
 
-zplug "MichaelAquilina/zsh-you-should-use"  # config in ~/.zshenv
+    # Make zplug manage itself like a plugin
+    # Source: https://github.com/zplug/zplug#let-zplug-manage-zplug
+    zplug "zplug/zplug", hook-build:"zplug --self-manage"
 
-zplug "zsh-users/zsh-autosuggestions"  # config in ~/.zshenv
-zplug "zsh-users/zsh-history-substring-search"  # config in ~/.zshenv; there are key bindings below
-zplug "zsh-users/zsh-syntax-highlighting"
+    zplug "MichaelAquilina/zsh-you-should-use"  # config in ~/.zshenv
 
-zplug "romkatv/powerlevel10k", as:theme, depth:1
+    zplug "zsh-users/zsh-autosuggestions"  # config in ~/.zshenv
+    zplug "zsh-users/zsh-history-substring-search"  # config in ~/.zshenv; there are key bindings below
+    zplug "zsh-users/zsh-syntax-highlighting"
 
-zplug load
+    zplug "romkatv/powerlevel10k", as:theme, depth:1
+
+    zplug load
+
+fi
 
 
 
@@ -169,14 +173,16 @@ bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 bindkey -M menuselect 'j' vi-down-line-or-history
 
-# history-substring-search plugin
-# Source: https://github.com/zsh-users/zsh-history-substring-search#usage
-# Normal mode
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-# VI mode
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+if [ -r "$XDG_DATA_HOME/zplug/init.zsh" ]; then
+    # history-substring-search plugin
+    # Source: https://github.com/zsh-users/zsh-history-substring-search#usage
+    # Normal mode
+    bindkey "$terminfo[kcuu1]" history-substring-search-up
+    bindkey "$terminfo[kcud1]" history-substring-search-down
+    # VI mode
+    bindkey -M vicmd 'k' history-substring-search-up
+    bindkey -M vicmd 'j' history-substring-search-down
+fi
 
 
 
