@@ -4,30 +4,35 @@
 import os
 import atexit
 import readline
-from pathlib import Path
 
-if readline.get_current_history_length() == 0:
-    state_home = os.environ.get("XDG_STATE_HOME")
-    if state_home is None:
-        state_home = Path.home() / ".local" / "state"
-    else:
-        state_home = Path(state_home)
+try:
+    import pathlib
+except ImportError:  # not part of python2
+    pass
+else:
 
-    history_path = state_home / "python" / "history"
-    if history_path.is_dir():
-        raise OSError(f"'{history_path}' cannot be a directory")
+    if readline.get_current_history_length() == 0:
+        state_home = os.environ.get("XDG_STATE_HOME")
+        if state_home is None:
+           state_home = pathlib.Path.home() / ".local" / "state"
+        else:
+            state_home = pathlib.Path(state_home)
 
-    history = str(history_path)
+        history_path = state_home / "python" / "history"
+        if history_path.is_dir():
+            raise OSError(history_path + " cannot be a directory")
 
-    try:
-        readline.read_history_file(history)
-    except OSError:  # Non existent
-        pass
+        history = str(history_path)
 
-    def write_history():
         try:
-            readline.write_history_file(history)
-        except OSError:
+            readline.read_history_file(history)
+        except OSError:  # Non existent
             pass
 
-    atexit.register(write_history)
+        def write_history():
+            try:
+                readline.write_history_file(history)
+            except OSError:
+                pass
+
+        atexit.register(write_history)
