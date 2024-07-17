@@ -175,6 +175,9 @@ submodule = log
 [help]
 autocorrect = 50
 
+[init]
+defaultBranch = main
+
 [merge]
 conflictstyle = diff3
 ff = only
