@@ -42,7 +42,7 @@ mods = "Control|Shift"
 history = 9999
 multiplier = 10
 
-[shell]
+[terminal.shell]
 args = ["-l"]
 program = "/usr/bin/zsh"
 
