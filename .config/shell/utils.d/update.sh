@@ -39,7 +39,32 @@ _remove_old_snaps() {
 
 
 
-# Update local git repositories (mostly ~/repos)
+function _fetch_repos {
+    local base_dir="$1"
+    local has_dirs=false
+
+    if [ "$(ls -A "$base_dir")" ]; then
+     for dir in "$base_dir"/*; do
+        if [ -d "$dir" ]; then
+            has_dirs=true
+            break
+        fi
+     done
+    fi
+
+    if [ "$has_dirs" = true ]; then
+        for dir in "$base_dir"/*; do
+            if [ -d "$dir" ]; then
+                if [ -d "$dir/.git" ]; then
+                    echo "Fetching $dir"
+                    (cd "$dir" && git fetch --all --prune)
+                fi
+                _fetch_repos "$dir"
+            fi
+        done
+    fi
+}
+
 _update_repositories() {
     [ -d $REPOS ] || return
 
@@ -52,10 +77,7 @@ _update_repositories() {
     # if it cd's into a folder with a ".env" file
     ZSH_DOTENV_FILE='.do_not_run_dotenv'
 
-    for dir in */; do
-        cd "$REPOS/$dir" && echo "Fetching $REPOS/$dir"
-        git fetch --all --prune
-    done
+    _fetch_repos "$REPOS"
 
     ZSH_DOTENV_FILE='.env'
 
