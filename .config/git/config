@@ -108,6 +108,8 @@ grept =     grep --break --context 1 --full-name --heading --ignore-case --line-
 # Push current branch to origin
 push-to-origin = "!f(){ git push --set-upstream origin $(git current-branch) "$@"; }; f"
 pso =            "!f(){ git push --set-upstream origin $(git current-branch) "$@"; }; f"
+prune-gone = "!git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}'"
+prune-delete = "!git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -d"
 
 [clean]
 requireforce = true
