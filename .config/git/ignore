@@ -1,0 +1,6 @@
+# Generic temporary files
+*.backup
+*.bak
+*.orig
+*.temp
+*.tmp

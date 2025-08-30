@@ -1,0 +1,273 @@
+[alias]
+
+# Note that ~/.config/shell/aliases loads all `git` aliases with
+# less than 7 characters into the shell's "namespace" with a "g" prefix
+# Example:  `git add`  <=>  `git a`  <=>  `ga`
+
+a = add
+ap = add --patch
+
+br = branch
+bra = branch --all
+brd = branch --delete
+brdd = branch --delete --force
+brm = branch --move
+
+ci = commit
+cim = commit --message
+
+cl = clone
+
+co = checkout
+cob = checkout -b
+cod = checkout develop
+com = checkout main
+
+cp = cherry-pick
+
+df = diff
+
+fe = fetch
+
+lg = log
+lga = log --all
+
+me = merge
+mea = merge --abort
+mec = merge --continue
+meff = merge --ff-only
+menoff = merge --no-ff
+
+pl = pull
+plrb = pull --rebase
+
+ps = push
+psf = push --force
+
+rb = rebase --committer-date-is-author-date
+rba = rebase --abort
+rbc = rebase --continue
+rbi = rebase --interactive
+rbq = rebase --quit
+rbs = rebase --skip
+
+rl = reflog
+
+rm = rm  # to make it available as the `grm` alias in the shell
+
+rs = reset
+
+rv = revert
+s = status
+ss = status --short
+
+sh = show
+
+st = stash
+sta = stash push --include-untracked  # "push" does not go into the shortcut!
+stam = stash push --include-untracked --message
+stapp = stash apply
+stl = stash list
+stp = stash pop
+stsh = stash show
+
+# Synonyms as "specified" in the `git status` header
+discard = checkout --
+unstage = reset HEAD --
+
+amend-commit = !git log -n 1 --pretty=tformat:%B | git commit -F - --amend  # Keep the commit message
+
+current-branch = !git rev-parse --abbrev-ref HEAD
+
+project-root = rev-parse --show-toplevel
+
+uncommit = reset --soft HEAD~1
+
+# Sync the working directory into the index
+sync-deleted = !git ls-files -z --deleted | xargs -r -0 git rm
+sync = !git sync-deleted && git add . --all
+
+# Make minimal diff the default
+diff-minimal = diff --color-words=. --ws-error-highlight=all
+d = !git diff-minimal
+dlc = diff --color-words=. --ws-error-highlight=all HEAD
+ds = diff --color-words=. --ws-error-highlight=all --staged
+
+# Clean the project folder with intuitive commands
+clean-all = !git reset --hard && git clean-ignored && git clean-untracked
+clean-ignored = "!f() { if [ -f .python-version ]; then mv .python-version .python-version.XYZ; fi; if [ -f .env ]; then mv .env .env.XYZ; fi; git clean -X -d -f "$@"; if [ -f .python-version.XYZ ]; then mv .python-version.XYZ .python-version; fi; if [ -f .env.XYZ ]; then mv .env.XYZ .env; fi }; f"
+clean-untracked = !git clean -x -d -e ".python-version" -e ".env" -f  # because the "-e" flag does not work with "-X"
+
+# Delete EVERYTHING not reachable from a branch from the repository
+gc-everything = "!f() { git -c gc.reflogExpire=0 -c gc.reflogExpireUnreachable=0 -c gc.rerereresolved=0 -c gc.rerereunresolved=0 -c gc.pruneExpire=now gc "$@"; }; f"
+
+# Make the logs look nice by default
+log-format1 = log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%an @ %ad => %ar%n' --date=format:'%a %Y-%m-%d %H:%M:%S %z'
+log-format2 = log --pretty='%C(auto)%h: %s%d%Creset%n%C(dim)%aN @ %ad => %ar%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S %z'
+last-commit = !git log-format2 -1 -p --stat
+lc = !git last-commit
+history = !git log-format2 --graph
+hi = !git history
+hia = !git history --all
+summary = !git log-format1 --graph
+su = !git summary
+sua = !git summary --all
+oneline = log --pretty='%C(auto)%h: %s%d' --graph
+ol = !git oneline
+ola = !git oneline --all
+
+# Search the repository
+grep-code = grep --break --context 1 --full-name --heading --line-number --show-function
+grepc = !git grep-code
+grep-log = log --all --regexp-ignore-case --pretty='%C(auto)%h: %s%+D%Creset%n%C(reverse)%C(dim)%aN @ %ad = %ar%Creset%n%+b' --date=format:'%a %Y-%m-%d %H:%M:%S' --grep
+grepl = !git grep-log
+grep-text = grep --break --context 1 --full-name --heading --ignore-case --line-number
+grept = !git grep-text
+
+# Prune local branches that were deleted remotely
+prune-delete = "!git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -d"
+prune-show = "!git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}'"
+
+aliases = config --get-regexp 'alias.*'
+aliases-internal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1/' | sort  # used in ~/.config/shell/aliases
+
+
+[clean]
+
+requireforce = true
+
+
+[color "branch"]
+
+current = cyan dim bold reverse
+local = green bold
+remote = red bold
+
+
+[color "decorate"]
+
+HEAD = cyan dim bold reverse
+branch = green bold
+remoteBranch = red bold
+stash = magenta dim bold reverse
+tag = magenta bold
+
+
+[color "diff"]
+
+context = white
+frag = blue dim bold reverse
+meta = yellow dim bold reverse
+new = green bold
+old = red bold
+whitespace = red dim bold reverse
+
+
+[color "grep"]
+
+context = white
+filename = yellow dim bold reverse
+function = white bold
+linenumber = blue dim bold reverse
+match = red bold
+selected = white
+separator = blue dim bold reverse
+
+
+[color "interactive"]
+
+error = red dim bold reverse
+header = white
+help = yellow bold
+prompt = white dim bold reverse
+
+
+[color "status"]
+
+added = green bold
+branch = cyan dim bold reverse
+changed = yellow bold
+header = white
+localBranch = green bold
+nobranch = red dim bold reverse
+remoteBranch = red bold
+unmerged = yellow dim bold reverse
+untracked = red bold
+
+
+[commit]
+
+cleanup = strip
+gpgSign = true
+template = ~/.config/git/commit_msg_template.txt
+verbose = true
+
+
+[core]
+
+editor = vim
+excludesfile = ~/.config/git/ignore
+pager = less --chop-long-lines --ignore-case --LONG-PROMPT --status-column --quit-if-one-screen
+whitespace = -space-before-tab,tab-in-indent
+
+
+[diff]
+
+renames = true
+submodule = log
+
+
+[help]
+
+autocorrect = 50
+
+
+[init]
+
+defaultBranch = main
+
+
+[merge]
+
+conflictstyle = diff3
+ff = only
+
+
+[pull]
+
+ff = only
+rebase = true
+
+
+[push]
+
+autoSetupRemote = true
+default = upstream
+recursesubmodules = check
+
+
+[rerere]
+
+enabled = true
+
+
+[url "https://bitbucket.org/"]
+
+insteadOf = bb:
+
+
+[url "https://github.com/"]
+
+insteadOf = gh:
+
+
+[url "https://gitlab.com/"]
+
+insteadOf = gl:
+
+
+[user]
+
+name = Alexander Hess
+email = alexander@webartifex.biz
+signingKey = alexander@webartifex.biz

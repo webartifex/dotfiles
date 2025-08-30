@@ -1,0 +1,18 @@
+# SUBJECT -> What does the commit do?
+# - Imperative mood, no "." at the end
+# - Start with "Add", "Fix", "Make", "Remove", ...
+#---------- 50 characters / 1 line ---------------|
+
+
+# BODY -> The why and how
+# - Use plain text without formatting
+#   + Use "-" and "+" as bullets
+# - "See: URL" to link to external resources
+#---------- 72 characters / multiple lines -----------------------------|
+
+
+# ISSUE TRACKER -> Uncomment one of the lines below
+# Closes #41
+# Fixes #42
+# Resolves #43
+
