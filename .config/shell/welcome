@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Show system info each time a shell is started
+
+
+_hostname=$(hostname)
+_os="$(uname -s) $(uname -r)"
+_uptime=$(uptime -p | sed 's/up //; s/weeks\?/w/g; s/days\?/d/g; s/hours\?/h/g; s/minutes\?/m/g; s/ //g')
+_user=$(whoami)
+_work_dir=$(echo "$PWD" | sed "s|^$HOME|~|")
+
+
+if [ "$(id -u)" -eq 0 ]; then
+    _prompt="#"
+else
+    _prompt="$"
+fi
+
+
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    _remote="  ssh"
+else
+    _remote="  local"
+fi
+
+
+if _in_bash; then
+    _shell_type="bash"
+elif _in_zsh; then
+    _shell_type="zsh"
+else
+    _shell_type="non-bash/zsh shell"
+fi
+
+
+_info_line="$_user@$_hostname:$_work_dir$_prompt$_remote  $_os  uptime: $_uptime  $_shell_type"
+_sep_line=$(echo "$_info_line" | sed 's/./─/g')
+
+
+echo ""
+echo "$_sep_line"
+echo "$_info_line"
+echo "$_sep_line"
+echo ""

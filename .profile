@@ -61,3 +61,7 @@ _prepend_to_path "$HOME/.local/bin"
 
 # Ensure ~/.profile is loaded each time `bash` starts
 unset PROFILE_LOADED
+
+
+# When everything is loaded, show a little welcome message
+[ -f "$HOME/.config/shell/welcome" ] && . "$HOME/.config/shell/welcome"
