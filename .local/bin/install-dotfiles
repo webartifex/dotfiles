@@ -1,0 +1,74 @@
+#!/bin/sh
+
+# Installation script to make the dotfiles available in ~/
+#
+# `git` is the only dependency for this script to run (See: https://git-scm.com)
+#
+# See: https://code.webartifex.biz/alexander/dotfiles#installation
+
+
+set -e
+
+
+XDG_DATA_HOME="$HOME/.local/share"  # also set in ~/.config/shell/env
+DOTFILES_DIR="$XDG_DATA_HOME/dotfiles"  # also set in ~/.config/shell/env
+
+
+# Check if the dotfiles were installed previously
+if [ -d "$DOTFILES_DIR" ] && [ "${FORCE_INSTALL:-}" != "1" ]; then
+    echo ""
+    echo "The dotfiles are already installed at: $DOTFILES_DIR"
+    echo ""
+    echo "Options:"
+    echo "  - Set 'export FORCE_INSTALL=1' and run installation again"
+    echo "  - Update with 'dotfiles pull' and continue using them"
+    echo ""
+else
+    # Remove an already installed dotfiles repository
+    if [ -d "$DOTFILES_DIR" ]; then
+        rm -rf "$DOTFILES_DIR"
+    fi
+
+    if [ -z "$DOTFILES_BRANCH" ]; then
+        # Auto-detect if we're on a desktop system
+        if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ] || [ "$(systemctl --user is-active graphical-session.target 2>/dev/null)" = "active" ]; then
+            export DOTFILES_BRANCH="desktop"
+        else
+            export DOTFILES_BRANCH="main"
+        fi
+    elif [ "$DOTFILES_BRANCH" != "desktop" ] && [ "$DOTFILES_BRANCH" != "main" ]; then
+        echo ""
+        echo "'DOTFILES_BRANCH' may only be one of: 'desktop' or 'main'"
+        exit 1
+    fi
+
+    mkdir -p "$XDG_DATA_HOME"
+
+    git clone --bare https://code.webartifex.biz/alexander/dotfiles "$XDG_DATA_HOME/dotfiles"
+
+    # Do not checkout project documentation intended for web GUIs (e.g., GitHub)
+    git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" config core.sparseCheckout true
+    echo "/*" > "$DOTFILES_DIR/info/sparse-checkout"
+    echo "!LICENSE.txt" >> "$DOTFILES_DIR/info/sparse-checkout"
+    echo "!README.md" >> "$DOTFILES_DIR/info/sparse-checkout"
+
+    # Put the dotfiles in the user's `$HOME` folder
+    git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" checkout --force "$DOTFILES_BRANCH"
+
+    # Do not show files not tracked in the dotfiles repository because there are simply too many
+    git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" config --local status.showUntrackedFiles no
+
+    # The author of this file prefers to use SSH to sync his machines with the origin
+    git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" remote set-url origin git@git.webartifex.biz:alexander/dotfiles.git
+
+    echo ""
+    echo "The dotfiles were installed successfully"
+
+    # Mimic starting a new shell to get new dotfiles right away
+    if [ -n "$ZSH_VERSION" ]; then
+        . "$HOME/.zshrc"
+    else
+        . "$HOME/.profile"
+    fi
+
+fi

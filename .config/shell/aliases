@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Aliases used in all kinds of shells
+
+
+# Manage the bare `git` repository in ~/ holding the dotfiles
+alias dotfiles='git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
