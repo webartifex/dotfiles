@@ -51,6 +51,10 @@ if [ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ]; then
 fi
 
 
+# `zsh`-specific configurations are automatically sourced from ~/.zshrc,
+# which then also ensures that this file is sourced
+
+
 # Put local executables on the `$PATH`
 _prepend_to_path "$HOME/.local/bin"
 
