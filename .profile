@@ -1,6 +1,11 @@
 #!/bin/sh
 
 # Main setup file executed for all kinds of shells
+#
+# For `bash`, the following two files must not exist:
+#  - ~/.bash_login
+#  - ~/.bash_profile
+# If they do, this file may not be executed!
 
 
 # Prevent loading ~/.profile twice in `bash`

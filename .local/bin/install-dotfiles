@@ -61,6 +61,10 @@ else
     # The author of this file prefers to use SSH to sync his machines with the origin
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" remote set-url origin git@git.webartifex.biz:alexander/dotfiles.git
 
+    # Remove potentially conflicting `bash` startup files
+    rm -f "$HOME/.bash_login"
+    rm -f "$HOME/.bash_profile"
+
     echo ""
     echo "The dotfiles were installed successfully"
 

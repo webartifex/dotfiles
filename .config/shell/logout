@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# When logging out of a machine, clear the screen to increase privacy
+
+
+if [ "$SHLVL" = 1 ]; then  # If on the outermost shell instance
+
+    # Clear screen and scrollback in SSH/terminal emulators
+    if _command_exists clear; then
+        clear
+        printf '\e[3J'  # Clear scrollback buffer in modern emulators
+    fi
+
+    # On real Linux tty, run `clear_console` for full reset as well
+    if [ -t 0 ] && [ "$(tty)" != "not a tty" ]; then
+        case "$(tty)" in
+            /dev/tty[0-9]*)
+                if _command_exists clear_console; then
+                    clear_console -q
+                fi
+                ;;
+        esac
+    fi
+
+fi
