@@ -27,5 +27,6 @@ export VISUAL=$EDITOR
 
 
 # Move common tools' config and cache files into XDG directories
+export BAT_CONFIG_PATH="$XDG_CONFIG_HOME/bat/config"
 export LESSHISTFILE="$XDG_STATE_HOME/less/history"
 export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"

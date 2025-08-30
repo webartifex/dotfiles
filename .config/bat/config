@@ -1,0 +1,7 @@
+--theme="TwoDark"
+
+--style="numbers,changes,header"
+
+--map-syntax ".bash_history:Bourne Again Shell (bash)"
+--map-syntax ".flake8:INI"
+--map-syntax "poetry.lock:TOML"
