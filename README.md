@@ -42,3 +42,9 @@ The config files in this repository are optimized for usage with
     [GNU's Bourne again shell](https://man7.org/linux/man-pages/man1/bash.1.html),
     or `bash` for short,
     and the popular [zsh](https://www.zsh.org/).
+
+
+## Copyright
+
+This repository and *all* of its contents are open-source
+    under the [MIT license](./LICENSE.txt).
